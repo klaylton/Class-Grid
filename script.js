@@ -3,13 +3,11 @@ const canvas = new fabric.Canvas('canvas', {
     height: 360
 })
 
-const fill = ()=> `#${Math.random().toString(16).slice(2, 8)}`
+const fill = () => `#${Math.random().toString(16).slice(2, 8)}`
 
 fabric.Object.prototype.set({
     originX: 'center',
-    originY: 'center',
-    // stroke: '#00',
-    // strokeWidth: 1
+    originY: 'center'
 })
 
 function formTiles(template_id) {
@@ -90,25 +88,31 @@ function renderTemplate(tiles) {
     canvas.renderAll()
 }
 
-renderTemplate(formTiles(2))
+function renderAllLayousSVG(rules) {
+    const layoutsSvgs = Object.keys(rules).reduce((acc, id) => {
+        const tl = formTiles(id)
+        const svg = createSVG(tl)
+        acc += `<div class='layout' data-id='${id}'>${svg}</div>`
+        return acc
+    }, '')
 
-const layoutsSvgs = Object.keys(rules).reduce((acc, id)=>{
-    const tl = formTiles(id)
-    const svg = createSVG(tl)
-    acc += `<div class='layout' data-id='${id}'>${svg}</div>`
-    return acc
-}, '')
+    return layoutsSvgs
+}
 
 
-const $grids = document.querySelector('#grids')
-$grids.innerHTML = layoutsSvgs
-
-$grids.addEventListener('click', ({target}) => {
-    if (target.classList.contains('layout')) {
-        const id = target.dataset.id
-        renderTemplate(formTiles(id))        
-    }
-})
+(function() {
+    renderTemplate(formTiles(1))
+    
+    const $grids = document.querySelector('#grids')
+    $grids.innerHTML = renderAllLayousSVG(rules)
+    
+    $grids.addEventListener('click', ({target}) => {
+        if (target.classList.contains('layout')) {
+            const id = target.dataset.id
+            renderTemplate(formTiles(id))        
+        }
+    })
+})()
 
 
 
