@@ -18,22 +18,22 @@ body {
     justify-content: space-between;
 }
 
-.layout {
+.grids__item {
     position: relative;
     cursor: pointer;
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     margin: 10px;
-    opacity: 0.9;
+    opacity: 1;
     background-color: rgb(127, 255, 212);
     transition: all 200ms;
 }
 
-.layout:hover {
-    opacity: 1;
+.grids__item:hover {
+    opacity: 0.9;
 }
 
-.layout:after {
+.grids__item:after {
     content: '';
     position: absolute;
     top: 0;
@@ -42,7 +42,11 @@ body {
     height: 100%;
 }
 
-.layout svg {
+.grids__item.active {
+    background-color: rgb(36, 190, 139);
+}
+
+.grids__item svg {
     width: 100%;
     height: 100%;
 }

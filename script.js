@@ -3,6 +3,8 @@ const canvas = new fabric.Canvas('canvas', {
     height: 360
 })
 
+let curr_template = 6
+
 const fill = () => `#${Math.random().toString(16).slice(2, 8)}`
 
 fabric.Object.prototype.set({
@@ -92,7 +94,7 @@ function renderAllLayousSVG(rules) {
     const layoutsSvgs = Object.keys(rules).reduce((acc, id) => {
         const tl = formTiles(id)
         const svg = createSVG(tl)
-        acc += `<div class='layout' data-id='${id}'>${svg}</div>`
+        acc += `<div class='grids__item' data-id='${id}'>${svg}</div>`
         return acc
     }, '')
 
@@ -101,15 +103,21 @@ function renderAllLayousSVG(rules) {
 
 
 (function() {
-    renderTemplate(formTiles(1))
+    renderTemplate(formTiles(curr_template))
     
     const $grids = document.querySelector('#grids')
     $grids.innerHTML = renderAllLayousSVG(rules)
-    
+    $gridsLayouts = $grids.querySelectorAll('.grids__item')
     $grids.addEventListener('click', ({target}) => {
-        if (target.classList.contains('layout')) {
-            const id = target.dataset.id
-            renderTemplate(formTiles(id))        
+        if (target.classList.contains('grids__item')) {
+            const id = Number(target.dataset.id)
+            if (id == curr_template) return
+            curr_template = id
+                        
+            renderTemplate(formTiles(curr_template))
+
+            $gridsLayouts.forEach(item => item.classList.remove('active'))
+            target.classList.add('active')
         }
     })
 })()
