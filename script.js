@@ -107,7 +107,7 @@ function renderAllLayousSVG(rules) {
     
     const $grids = document.querySelector('#grids')
     $grids.innerHTML = renderAllLayousSVG(rules)
-    $gridsLayouts = $grids.querySelectorAll('.grids__item')
+    const $gridsLayouts = $grids.querySelectorAll('.grids__item')
     $grids.addEventListener('click', ({target}) => {
         if (target.classList.contains('grids__item')) {
             const id = Number(target.dataset.id)
