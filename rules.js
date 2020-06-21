@@ -52,3 +52,74 @@ const rules = {
     51: [[1, 2, 3, 3], [4, 5, 3, 3], [6, 5, 7, 8], [9, 10, 11, 12]],
     52: [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [6, 7, 3, 8, 9], [6, 7, 10, 8, 9], [11, 12, 10, 13, 14], [11, 12, 10, 13, 14], [11, 12, 10, 13, 14]]
 }
+
+
+
+function subclasses() {
+
+    fabric.Clip = fabric.util.createClass(fabric.Rect, {
+
+        type: 'clip',
+        selectable: false,
+        hoverCursor: 'default',
+        objectCaching: false,
+        absolutePositioned: true,
+        fill: 'rgba(225,225,225,0.4)',
+
+        initialize: function (options) {
+            options || (options = {});
+
+            this.callSuper('initialize', options);
+            this.set('slot_id', options.slot_id || '');
+            this.set('hasPhoto', options.hasPhoto || false);
+        },
+
+        toObject: function () {
+            return fabric.util.object.extend(this.callSuper('toObject'), {
+                slot_id: this.get('slot_id'),
+                hasPhoto: this.get('hasPhoto')
+            });
+        },
+
+        _render: function (ctx) {
+            this.callSuper('_render', ctx);
+        }
+    })
+
+    // class Icon delete photo
+    fabric.DeleteControl = fabric.util.createClass(fabric.Rect, {
+
+        type: 'DeleteControl',
+        initialize: function (options) {
+            options || (options = {});
+            this.callSuper('initialize', options);
+            this.set('slot_id', options.label || '');
+        },
+
+        toObject: function () {
+            return fabric.util.object.extend(this.callSuper('toObject'), {
+                label: this.get('slot_id')
+            });
+        },
+
+        _render: function (ctx) {
+            this.callSuper('_render', ctx);
+        },
+
+        hide: function () {
+            this.set({opacity: 0})
+        },
+
+        show: function () {
+            this.set({opacity: 1})
+        }
+    });
+
+
+    // classe de teste
+    
+
+}
+
+
+subclasses()

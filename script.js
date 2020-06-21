@@ -79,7 +79,7 @@ function createSVG(tiles) {
 function renderTemplate(tiles) {
     canvas.clear()
     tiles.forEach(({width, height, left, top, fill}) => {
-        canvas.add(new fabric.Rect({
+        canvas.add(new fabric.Clip({
             width,
             height,
             left: left+width/2,
@@ -120,6 +120,38 @@ function renderAllLayousSVG(rules) {
             target.classList.add('active')
         }
     })
+
+
+    const btnDelete = new fabric.DeleteControl({
+        width: 50, height: 50, top: 100, left: 200, fill: 'red'
+    })
+    canvas.add(btnDelete).renderAll()
+
+    canvas.on('mouse:over', function (e) {
+        if (e.target.type === 'DeleteControl') {
+            e.target.hide()
+            canvas.renderAll();
+        }
+    })
+    canvas.on('mouse:out', function (e) {
+        if (e.target.type === 'DeleteControl') {
+            e.target.show()
+            canvas.renderAll();
+        }
+    })
+
+
+    var pi = new fabric.Tag();
+    // canvas.pi.async = true;
+    pi.setTagName("Unix time");
+
+    canvas.add(pi);
+    setInterval(function () {
+
+        pi.setValue(Math.floor((new Date()).getTime() / 1000).toString());
+        canvas.renderAll();
+    }, 1000);
+    
 })()
 
 
