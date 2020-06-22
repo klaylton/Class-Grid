@@ -1,15 +1,21 @@
+const $ = el => document.querySelector(el)
+
 const canvas = new fabric.Canvas('canvas', {
-    width: 360,
-    height: 360
+    width: 900,
+    height: 900
 })
 
 let curr_template = 6
+const $canvas_container = $('.canvas-container')
+const canvas_container = $(".canvas_container")
+const $canvas_container_wrapper = $('#canvas-container-wrapper')
 
 const fill = () => `#${Math.random().toString(16).slice(2, 8)}`
 
 fabric.Object.prototype.set({
     originX: 'center',
-    originY: 'center'
+    originY: 'center',
+    transparentCorners: false
 })
 
 function formTiles(template_id) {
@@ -84,7 +90,8 @@ function renderTemplate(tiles) {
             height,
             left: left+width/2,
             top: top + height /2,
-            fill
+            fill,
+            objectCaching: false,
         }))
     })
     canvas.renderAll()
@@ -101,8 +108,91 @@ function renderAllLayousSVG(rules) {
     return layoutsSvgs
 }
 
+$('#scale').addEventListener('input', function(e) {
+    const val = Number(e.target.value)
+    onScaleUpdate(val)
+})
+
+// ajuste na escala
+function onScaleUpdate(value) {
+    // $("#slider-scale-value").val(value);
+
+    var new_width = canvas.width / 100 * value;
+    var new_height = canvas.height / 100 * value;
+
+    $(".canvas_container").style.width = new_width + "px";
+    $(".canvas_container").style.height = new_height + "px";
+
+    $("#canvas").style.width = new_width + "px";
+    $("#canvas").style.height = new_height + "px";
+
+    // editor.move.checkPosition();
+    render_after_scale();
+}
+
+function render_after_scale(){
+    console.log('chamou');
+    
+    var new_size_corner = Math.round(20 * canvas.width / $("#canvas").clientWidth);
+    var new_size_rotate = Math.round(45 * canvas.width / $("#canvas").clientWidth);
+    fabric.Object.prototype.set({
+        cornerSize: new_size_corner,
+        rotatingPointOffset: new_size_rotate
+    });
+}
+
+
+
+function canvasPos() {
+    var max_height = Math.max(window.innerHeight - 100 - 80, 100);
+    var max_height2 = window.innerHeight - 100 - 80;
+
+    // $('#canvas-container').css({'max-height': max_height});
+    $canvas_container_wrapper.style.maxHeight = max_height2 + 'px'
+    $canvas_container_wrapper.style.height = max_height + 'px'
+
+
+    var new_width = $canvas_container_wrapper.clientWidth;
+    var new_height = Math.round(new_width * canvas.height / canvas.width);
+
+    if (new_width > canvas.width) {
+        new_width = canvas.width;
+        new_height = canvas.height;
+    }
+
+    if (new_height > max_height) {
+        new_height = max_height;
+        new_width = Math.round(new_height * canvas.width / canvas.height);
+    }
+
+    canvas_container.style.width = new_width + "px";
+    canvas_container.style.height = new_height + "px";
+
+    canvas.setDimensions({
+        width: new_width + 'px',
+        height: new_height + 'px'
+    }, {
+        cssOnly: true
+    })
+
+
+    $canvas_container.style.marginLeft = 'auto'
+    $canvas_container.style.marginTop = 0
+
+    canvas.requestRenderAll()
+
+};
+
+
+window.addEventListener('resize', function (event) {
+    console.log(window.innerHeight);
+    
+    canvasPos()
+});
+
 
 (function() {
+    canvasPos()
     renderTemplate(formTiles(curr_template))
     
     const $grids = document.querySelector('#grids')
@@ -126,7 +216,7 @@ function renderAllLayousSVG(rules) {
         width: 50, height: 50, top: 100, left: 200, fill: 'red'
     })
     canvas.add(btnDelete).renderAll()
-
+/*
     canvas.on('mouse:over', function (e) {
         if (e.target.type === 'DeleteControl') {
             e.target.hide()
@@ -139,18 +229,8 @@ function renderAllLayousSVG(rules) {
             canvas.renderAll();
         }
     })
+*/
 
-
-    var pi = new fabric.Tag();
-    // canvas.pi.async = true;
-    pi.setTagName("Unix time");
-
-    canvas.add(pi);
-    setInterval(function () {
-
-        pi.setValue(Math.floor((new Date()).getTime() / 1000).toString());
-        canvas.renderAll();
-    }, 1000);
     
 })()
 
