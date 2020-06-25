@@ -1,8 +1,8 @@
 const $ = el => document.querySelector(el)
 
 const canvas = new fabric.Canvas('canvas', {
-    width: 900,
-    height: 900
+    width: 360,
+    height: 360
 })
 
 let curr_template = 6
