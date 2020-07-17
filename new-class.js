@@ -312,4 +312,4 @@ function drawTestRect() {
 
 };
 
-// drawTestRect()
+drawTestRect()
