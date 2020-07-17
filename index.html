@@ -7,10 +7,51 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="canvas" width="600" height="600"></canvas>
+    <button href="#pop-save" class="slink fancy">SALVAR</button>
+    <div id="canvas-container-wrapper">
+        <div class="canvas_container">
+            <canvas id="canvas" width="900" height="900"></canvas>
+        </div>
+    </div>
+    <input type="range" name="scale" id="scale">
     <div id="grids"></div>
+    <div id="save-box">
+        <div class="pop-up" id="pop-save">
+            <div class="pop-title">Salvar imagem</div>
+            <div class="pop-cont">
+                <form>
+                    <div class="form-row">
+                        <input type="text" class="t-inp" name="filename" value="colagemdefotos" />
+                        <div class="checks">
+                            <div class="check" style="border-radius:5px 0 0 5px;"><label><input type="radio"
+                                        name="fileext" value="jpg" checked="" /><span>.jpg</span></label></div>
+                            <div class="check" style="border-radius:0 5px 5px 0;"><label><input type="radio"
+                                        name="fileext" value="png" /><span>.png</span></label></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="dr-slider">
+                            <span>Qualidade</span> <input type="text" value="95" id="slider-size-value" />
+                            <div class="slider-size">
+                                <input type="range" id="slider-size" value="95">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btns">
+                        <!-- <span onclick="$.fancybox.close();" class="slink"></span> -->
+                        <a class="slink link-savefile">salva</a>
+                        <a id="lnkDownload" href="#">Save image</a>
+                    </div>
+                </form>
+                <div style="height:280px;width:100%;text-align:center;margin:20px 0 5px;">
+                    <!-- colagemdefotos.com.br - Popup Banner -->
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="./fabric.min.js"></script>
     <script src="./rules.js"></script>
     <script src="./script.js"></script>
+    <script src="./save.js"></script>
 </body>
 </html>
