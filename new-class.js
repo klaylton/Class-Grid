@@ -1,4 +1,4 @@
-const canvas = new fabric.Canvas('c');
+const canvas = new fabric.Canvas('c')
 
 fabric.Clip = fabric.util.createClass(fabric.Group, {
     type: 'clip',
@@ -78,21 +78,10 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
         console.log('xs')
         this.callSuper('_render', ctx);
         //ctx._objects[1].text = this._objects[1].text;
-
     }
 
 });
 
-const c1 = new fabric.Circle({
-    radius: 80,
-    left: 0,
-    fill: '#a6ff00'
-});
-const c2 = new fabric.Circle({
-    radius: 100,
-    left: 50,
-    fill: '#a68f00'
-});
 const pi = new fabric.Clip([], {
     left: 20,
     top: 20,
@@ -102,31 +91,38 @@ const pi = new fabric.Clip([], {
 });
 
 canvas.add(pi)
+pi.setTagName("Label clip");
 
-pi.setTagName("Unix time");
 
 
-setInterval(function () {
-        pi.setValue(Math.floor((new Date()).getTime() / 1000).toString());
-        canvas.renderAll();
-    }, 1000);
+const c1 = new fabric.Circle({
+    radius: 80,
+    left: 0,
+    fill: '#a6ff00'
+});
+
+const c2 = new fabric.Circle({
+    radius: 100,
+    left: 50,
+    fill: '#a68f00'
+});
+
+
+fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
+    img.clipPath = pi;
+    img.scaleToWidth(200);
+    canvas.add(img);
+});
     
-    fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
-        img.clipPath = pi;
-        img.scaleToWidth(200);
-        canvas.add(img);
-    });
-    
 
-
-var rect = new fabric.Rect({
+const rect = new fabric.Rect({
     width: 200,
     height: 250,
     left: 10,
     top: 10,
     fill: 'red'
 });
-var circle = new fabric.Circle({
+const circle = new fabric.Circle({
     left: rect.left + rect.width/2,
     top: rect.top + rect.height/2,
     fill: 'yellow',
@@ -135,68 +131,67 @@ var circle = new fabric.Circle({
     originY: 'center',
     hoverCursor: 'pointer',
 });
-var group = new fabric.Group([rect, circle], {
+
+const group1 = new fabric.Group([rect, circle], {
     left: 20,
     top: 20,
     subTargetCheck: true
 });
-canvas.add(group);
-group.on('mousedown', onMouseDown);
+canvas.add(group1);
+
+group1.on('mousedown', onMouseDown);
 pi.on('mousedown', onMouseDown);
 
 function onMouseDown(option) {
-    console.log(option.subTargets[0].type);
-
     if(option.subTargets[0] && option.subTargets[0].type == 'textbox')
         console.log('Deu certo');
-        
 }
 
 
 /********** */
-var c11 = new fabric.Circle({
+const c11 = new fabric.Circle({
     radius: 100,
     left: 0,
     fill: '#a6ff00'
 });
 
-var c22 = new fabric.Circle({
+const c22 = new fabric.Circle({
     radius: 100,
     left: 50,
     fill: '#a6ff00'
 });
 
-var text = new fabric.Text("Very long text data displayed \n on hover", {
+const text = new fabric.Text("Very long text data displayed \n on hover", {
     width: '50', top: 100,
     fill: 'green',
     visible: false
 });
-var group = new fabric.Group([c11, c22, text], {
+const group2 = new fabric.Group([c11, c22, text], {
     left: 20,
     top: 20,
     subTargetCheck: true,
     perPixelTargetFind: true,
     absolutePositioned: true,
 });
-canvas.add(group);
+canvas.add(group2);
 
 fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
-    img.clipPath = group;
+    img.clipPath = group2;
     img.scaleToWidth(500);
     canvas.add(img);
 });
 
-group.on('mouseover', function (option) {
+group2.on('mouseover', function (option) {
     canvas.on('mouse:move', onMouseMove)
 });
 
-group.on('mouseout', function (option) {
+group2.on('mouseout', function (option) {
     onMouseMove();
     canvas.off('mouse:move', onMouseMove)
 });
 
 function onMouseMove(option) {
-    var textObj = group.getObjects()[1];
+    const textObj = group2.getObjects()[1];
     if (option && option.subTargets[0] && (option.subTargets[0].type == 'circle')) {
         if (textObj.visible) return;
         textObj.visible = true;
@@ -204,12 +199,12 @@ function onMouseMove(option) {
         if (!textObj.visible) return;
         textObj.visible = false;
     }
-    group.dirty = true;
+    group2.dirty = true;
     canvas.requestRenderAll();
 }
 
 
-var CustomGroup = fabric.util.createClass(fabric.Group, {
+const CustomGroup = fabric.util.createClass(fabric.Group, {
     type: 'customGroup',
 
     initialize: function (objects, options) {
@@ -222,7 +217,7 @@ var CustomGroup = fabric.util.createClass(fabric.Group, {
             angle: 45,
         }))
 
-        var rect1 = new fabric.Rect({
+        const rect1 = new fabric.Rect({
             left: 50,
             top: 160,
             fill: 'green',
@@ -246,7 +241,6 @@ var CustomGroup = fabric.util.createClass(fabric.Group, {
         this.callSuper('_render', ctx);
     }
 });
-
 
 
 function drawTestRect() {

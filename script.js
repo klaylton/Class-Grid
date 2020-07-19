@@ -117,8 +117,8 @@ $('#scale').addEventListener('input', function(e) {
 function onScaleUpdate(value) {
     // $("#slider-scale-value").val(value);
 
-    var new_width = canvas.width / 100 * value;
-    var new_height = canvas.height / 100 * value;
+    const new_width = canvas.width / 100 * value;
+    const new_height = canvas.height / 100 * value;
 
     $(".canvas_container").style.width = new_width + "px";
     $(".canvas_container").style.height = new_height + "px";
@@ -131,10 +131,8 @@ function onScaleUpdate(value) {
 }
 
 function render_after_scale(){
-    console.log('chamou');
-    
-    var new_size_corner = Math.round(20 * canvas.width / $("#canvas").clientWidth);
-    var new_size_rotate = Math.round(45 * canvas.width / $("#canvas").clientWidth);
+    const new_size_corner = Math.round(20 * canvas.width / $("#canvas").clientWidth);
+    const new_size_rotate = Math.round(45 * canvas.width / $("#canvas").clientWidth);
     fabric.Object.prototype.set({
         cornerSize: new_size_corner,
         rotatingPointOffset: new_size_rotate
@@ -144,16 +142,15 @@ function render_after_scale(){
 
 
 function canvasPos() {
-    var max_height = Math.max(window.innerHeight - 100 - 80, 100);
-    var max_height2 = window.innerHeight - 100 - 80;
+    const max_height = Math.max(window.innerHeight - 100 - 80, 100);
+    const max_height2 = window.innerHeight - 100 - 80;
 
     // $('#canvas-container').css({'max-height': max_height});
-    $canvas_container_wrapper.style.maxHeight = max_height2 + 'px'
-    $canvas_container_wrapper.style.height = max_height + 'px'
+    $canvas_container_wrapper.style.maxHeight = `${max_height2}px`
+    $canvas_container_wrapper.style.height = `${max_height}px`
 
-
-    var new_width = $canvas_container_wrapper.clientWidth;
-    var new_height = Math.round(new_width * canvas.height / canvas.width);
+    let new_width = $canvas_container_wrapper.clientWidth;
+    let new_height = Math.round(new_width * canvas.height / canvas.width);
 
     if (new_width > canvas.width) {
         new_width = canvas.width;
@@ -165,12 +162,12 @@ function canvasPos() {
         new_width = Math.round(new_height * canvas.width / canvas.height);
     }
 
-    canvas_container.style.width = new_width + "px";
-    canvas_container.style.height = new_height + "px";
+    canvas_container.style.width = `${new_width}px`
+    canvas_container.style.height = `${new_height}px`
 
     canvas.setDimensions({
-        width: new_width + 'px',
-        height: new_height + 'px'
+        width: `${new_width}px`,
+        height: `${new_height}px`
     }, {
         cssOnly: true
     })
