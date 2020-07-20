@@ -1,5 +1,91 @@
 const canvas = new fabric.Canvas('c')
 
+/*
+const rect = new fabric.Rect({
+    width: 200,
+    height: 250,
+    left: 10,
+    top: 10,
+    fill: 'red'
+});
+
+const circle = new fabric.Circle({
+    left: rect.left + rect.width / 2,
+    top: rect.top + rect.height / 2,
+    fill: 'yellow',
+    radius: 15,
+    originX: 'center',
+    originY: 'center',
+    hoverCursor: 'pointer',
+});
+
+const group1 = new fabric.Group([rect, circle], {
+    left: 20,
+    top: 20,
+    subTargetCheck: true
+});
+canvas.add(group1);
+
+group1.on('mousedown', onMouseDown);
+
+const c1 = new fabric.Circle({
+    radius: 80,
+    left: 0,
+    fill: '#a6ff00'
+});
+
+const c2 = new fabric.Circle({
+    radius: 100,
+    left: 50,
+    fill: '#a68f00'
+});
+
+/----------------------------------------------------
+const c11 = new fabric.Circle({
+    radius: 100,
+    left: 0,
+    fill: '#a6ff00'
+});
+
+const c22 = new fabric.Circle({
+    radius: 100,
+    left: 50,
+    fill: '#a6ff00'
+});
+
+const text = new fabric.Text("Very long text data displayed \n on hover", {
+    width: '50',
+    top: 100,
+    fill: 'green',
+    visible: false
+});
+const group2 = new fabric.Group([c11, c22, text], {
+    left: 20,
+    top: 20,
+    subTargetCheck: true,
+    perPixelTargetFind: true,
+    absolutePositioned: true,
+});
+canvas.add(group2);
+
+fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
+    img.clipPath = group2;
+    img.scaleToWidth(500);
+    canvas.add(img);
+});
+
+group2.on('mouseover', function (option) {
+    canvas.on('mouse:move', onMouseMove)
+});
+
+group2.on('mouseout', function (option) {
+    onMouseMove();
+    canvas.off('mouse:move', onMouseMove)
+});
+/*
+------------------------------------------------
+*/
+
 fabric.Clip = fabric.util.createClass(fabric.Group, {
     type: 'clip',
 
@@ -50,8 +136,6 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
         this.callSuper('initialize', items, options);
 
         this.setTagName("Unix time");
-        
-
     },
 
     getTagName: function () {
@@ -75,7 +159,6 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
 
     _render: function (ctx, noTransform) {
 
-        console.log('xs')
         this.callSuper('_render', ctx);
         //ctx._objects[1].text = this._objects[1].text;
     }
@@ -91,104 +174,22 @@ const pi = new fabric.Clip([], {
 });
 
 canvas.add(pi)
+pi.on('mousedown', onMouseDown);
 pi.setTagName("Label clip");
-
-
-
-const c1 = new fabric.Circle({
-    radius: 80,
-    left: 0,
-    fill: '#a6ff00'
-});
-
-const c2 = new fabric.Circle({
-    radius: 100,
-    left: 50,
-    fill: '#a68f00'
-});
-
 
 fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
     img.clipPath = pi;
     img.scaleToWidth(200);
     canvas.add(img);
 });
-    
-
-const rect = new fabric.Rect({
-    width: 200,
-    height: 250,
-    left: 10,
-    top: 10,
-    fill: 'red'
-});
-const circle = new fabric.Circle({
-    left: rect.left + rect.width/2,
-    top: rect.top + rect.height/2,
-    fill: 'yellow',
-    radius: 15,
-    originX: 'center',
-    originY: 'center',
-    hoverCursor: 'pointer',
-});
-
-const group1 = new fabric.Group([rect, circle], {
-    left: 20,
-    top: 20,
-    subTargetCheck: true
-});
-canvas.add(group1);
-
-group1.on('mousedown', onMouseDown);
-pi.on('mousedown', onMouseDown);
 
 function onMouseDown(option) {
     if(option.subTargets[0] && option.subTargets[0].type == 'textbox')
         console.log('Deu certo');
 }
 
-
 /********** */
-const c11 = new fabric.Circle({
-    radius: 100,
-    left: 0,
-    fill: '#a6ff00'
-});
 
-const c22 = new fabric.Circle({
-    radius: 100,
-    left: 50,
-    fill: '#a6ff00'
-});
-
-const text = new fabric.Text("Very long text data displayed \n on hover", {
-    width: '50', top: 100,
-    fill: 'green',
-    visible: false
-});
-const group2 = new fabric.Group([c11, c22, text], {
-    left: 20,
-    top: 20,
-    subTargetCheck: true,
-    perPixelTargetFind: true,
-    absolutePositioned: true,
-});
-canvas.add(group2);
-
-fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
-    img.clipPath = group2;
-    img.scaleToWidth(500);
-    canvas.add(img);
-});
-
-group2.on('mouseover', function (option) {
-    canvas.on('mouse:move', onMouseMove)
-});
-
-group2.on('mouseout', function (option) {
-    onMouseMove();
-    canvas.off('mouse:move', onMouseMove)
-});
 
 function onMouseMove(option) {
     const textObj = group2.getObjects()[1];
@@ -295,7 +296,6 @@ function drawTestRect() {
 
         if (option.subTargets[0] && option.subTargets[0].type == 'textbox')
             console.log('Deu certo');
-
     }
 
 };
