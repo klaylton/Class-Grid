@@ -1,4 +1,5 @@
 const canvas = new fabric.Canvas('c')
+fabric.Object.prototype.transparentCorners = false
 
 /*
 const rect = new fabric.Rect({
@@ -82,6 +83,16 @@ group2.on('mouseout', function (option) {
     onMouseMove();
     canvas.off('mouse:move', onMouseMove)
 });
+
+const rect = new fabric.Rect({
+    width: 200,
+    height: 250,
+    left: 10,
+    top: 10,
+    fill: 'red',
+    absolutePositioned: true
+});
+canvas.add(rect)
 /*
 ------------------------------------------------
 */
@@ -92,8 +103,8 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
     initialize: function (items, options) {
 
         options = {};
-        options.left = 100;
-        options.top = 100;
+        options.left = 250;
+        options.top = 10;
 
         const defaults = {
             width: 200,
@@ -134,6 +145,7 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
         })));
 
         this.callSuper('initialize', items, options);
+        this.set('label', options.label || '');
 
         this.setTagName("Unix time");
     },
@@ -166,20 +178,25 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
 });
 
 const pi = new fabric.Clip([], {
-    left: 20,
-    top: 20,
+    left: 250,
+    top: 200,
+    width: 200,
+    height: 200,
     subTargetCheck: true,
-    perPixelTargetFind: true,
     absolutePositioned: true,
 });
 
 canvas.add(pi)
-pi.on('mousedown', onMouseDown);
-pi.setTagName("Label clip");
+
+
 
 fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
-    img.clipPath = pi;
-    img.scaleToWidth(200);
+    img.set({
+        // clipPath: rect,
+        top: 10,
+        left: 10
+    })
+    img.scaleToWidth(200)
     canvas.add(img);
 });
 
@@ -205,7 +222,7 @@ function onMouseMove(option) {
 }
 
 
-const CustomGroup = fabric.util.createClass(fabric.Group, {
+fabric.CustomGroup = fabric.util.createClass(fabric.Group, {
     type: 'customGroup',
 
     initialize: function (objects, options) {
@@ -279,15 +296,13 @@ function drawTestRect() {
         subTargetCheck: true,
     });
 
-    cgroup.add(rect2)
-
     canvas.add(cgroup);
 
-    fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
-        img.clipPath = cgroup;
-        img.scaleToWidth(200);
-        canvas.add(img);
-    });
+    // fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
+    //     img.clipPath = cgroup;
+    //     img.scaleToWidth(200);
+    //     canvas.add(img);
+    // });
 
     cgroup.on('mousedown', onMouseDown);
 
