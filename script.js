@@ -139,8 +139,6 @@ function render_after_scale(){
     });
 }
 
-
-
 function canvasPos() {
     const max_height = Math.max(window.innerHeight - 100 - 80, 100);
     const max_height2 = window.innerHeight - 100 - 80;
@@ -171,7 +169,6 @@ function canvasPos() {
     }, {
         cssOnly: true
     })
-
 
     $canvas_container.style.marginLeft = 'auto'
     $canvas_container.style.marginTop = 0
@@ -205,6 +202,8 @@ window.addEventListener('resize', function (event) {
 
             $gridsLayouts.forEach(item => item.classList.remove('active'))
             target.classList.add('active')
+            const coordsClips = getCoordsClip()
+            coordsClips.forEach(renderIconAddImage)
         }
     })
 
@@ -212,7 +211,7 @@ window.addEventListener('resize', function (event) {
     const btnDelete = new fabric.DeleteControl({
         width: 50, height: 50, top: 100, left: 200, fill: 'red'
     })
-    canvas.add(btnDelete).renderAll()
+    // canvas.add(btnDelete)
 /*
     canvas.on('mouse:over', function (e) {
         if (e.target.type === 'DeleteControl') {
@@ -228,13 +227,31 @@ window.addEventListener('resize', function (event) {
     })
 */
 
-    
+    getCoordsClip()
 })()
 
 
 
 
+function getCoordsClip() {
+    const clips = canvas.getObjects('clip')
+    const coordsClips = clips.map(({width, height, top, left}) => {
+        return { width, height, top, left }
+    })
 
+    return coordsClips
+}
+
+function renderIconAddImage(coords) {
+    const icon = new fabric.Rect({
+        width: 20, height: 20,
+        top: coords.top,
+        left: coords.left,
+        fill: '#000'
+    })
+
+    canvas.add(icon)
+}
 
 
 

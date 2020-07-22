@@ -1,14 +1,53 @@
 const canvas = new fabric.Canvas('c')
 fabric.Object.prototype.transparentCorners = false
 
-/*
+var LabeledRect = fabric.util.createClass(fabric.Rect, {
+
+    type: 'labeledRect',
+
+    initialize: function (options) {
+        options || (options = {});
+
+        this.callSuper('initialize', options);
+        this.set('label', options.label || '');
+    },
+
+    toObject: function () {
+        return fabric.util.object.extend(this.callSuper('toObject'), {
+            label: this.get('label')
+        });
+    },
+
+    _render: function (ctx) {
+        this.callSuper('_render', ctx);
+
+        ctx.font = '20px Helvetica';
+        ctx.fillStyle = '#333';
+        ctx.fillText(this.label, -this.width / 2, -this.height / 2 + 20);
+    }
+});
+/** nova classe */
+var labeledRect = new LabeledRect({
+    width: 200,
+    height: 250,
+    left: 250,
+    top: 10,
+    label: 'test',
+    fill: '#faa',
+    absolutePositioned: true
+});
+canvas.add(labeledRect);
+
+
 const rect = new fabric.Rect({
     width: 200,
     height: 250,
     left: 10,
     top: 10,
-    fill: 'red'
+    fill: 'red',
+    // absolutePositioned: true
 });
+// canvas.add(rect)
 
 const circle = new fabric.Circle({
     left: rect.left + rect.width / 2,
@@ -23,10 +62,19 @@ const circle = new fabric.Circle({
 const group1 = new fabric.Group([rect, circle], {
     left: 20,
     top: 20,
+    absolutePositioned: true,
     subTargetCheck: true
 });
 canvas.add(group1);
 
+
+fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
+    img.clipPath = labeledRect;
+    img.scaleToWidth(200);
+    canvas.add(img);
+});
+
+/*
 group1.on('mousedown', onMouseDown);
 
 const c1 = new fabric.Circle({
@@ -54,7 +102,7 @@ const c22 = new fabric.Circle({
     fill: '#a6ff00'
 });
 
-const text = new fabric.Text("Very long text data displayed \n on hover", {
+const text = new fabric.Text("Very long \n on hover", {
     width: '50',
     top: 100,
     fill: 'green',
@@ -106,48 +154,45 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
         options.left = 250;
         options.top = 10;
 
-        const defaults = {
+        this.add(new fabric.Rect({
+            fill: '#77AAFF',
             width: 200,
             height: 140,
             originX: 'center',
             originY: 'center'
-        };
+        }));
 
-        const defaults1 = {
+        this.add(new fabric.Textbox('PI tag name', {
+            textAlign: 'center',
+            fontSize: 14,
             width: 100,
             height: 120,
             originX: 'center',
             originY: 'top',
             top: -20,
             backgroundColor: 'red'
-        }; 
+        }));
 
-        const defaults2 = {
+        this.add(new fabric.IText('Add Photo', {
+            textAlign: 'center',
+            fontSize: 16,
             width: 100,
             height: 120,
             originX: 'center',
             originY: 'top',
             top: 0
-        };
-
-        items.push(new fabric.Rect(Object.assign(defaults, {
-            fill: '#77AAFF',
-        })));
-
-        items.push(new fabric.Textbox('PI tag name', Object.assign(defaults1, {
-            textAlign: 'center',
-            fontSize: 14
-        })));
-
-        items.push(new fabric.IText('Add Photo', Object.assign(defaults2, {
-            textAlign: 'center',
-            fontSize: 16
-        })));
+        }));
 
         this.callSuper('initialize', items, options);
         this.set('label', options.label || '');
 
         this.setTagName("Unix time");
+    },
+
+    toObject: function () {
+        return fabric.util.object.extend(this.callSuper('toObject'), {
+            label: this.get('label')
+        });
     },
 
     getTagName: function () {
@@ -177,28 +222,17 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
 
 });
 
-const pi = new fabric.Clip([], {
+const custom = new fabric.Clip([], {
     left: 250,
     top: 200,
     width: 200,
     height: 200,
-    subTargetCheck: true,
     absolutePositioned: true,
 });
 
-canvas.add(pi)
+canvas.add(custom)
 
 
-
-fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
-    img.set({
-        // clipPath: rect,
-        top: 10,
-        left: 10
-    })
-    img.scaleToWidth(200)
-    canvas.add(img);
-});
 
 function onMouseDown(option) {
     if(option.subTargets[0] && option.subTargets[0].type == 'textbox')
