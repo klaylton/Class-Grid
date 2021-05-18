@@ -37,9 +37,9 @@ body {
 .grids__item {
     position: relative;
     cursor: pointer;
-    width: 100px;
-    height: 100px;
-    margin: 10px;
+    width: 80px;
+    height: 80px;
+    margin: 5px;
     opacity: 1;
     background-color: rgb(127, 255, 212);
     transition: all 200ms;

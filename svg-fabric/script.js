@@ -112,7 +112,7 @@ function renderTemplate(tiles) {
 }
 
 /**
- * Gera um HTML com todos os SVGs.
+ * Gera um HTML com todos os SVGs. Responsável pela listagem de todos os modelos.
  * @param {Array} rules todos os tiles
  * @returns Node HTML contendo todos os SVG
  */
@@ -219,12 +219,27 @@ window.addEventListener('resize', function (event) {
                         
             renderTemplate(formTiles(curr_template))
 
-            $gridsLayouts.forEach(item => item.classList.remove('active'))
+            const $item_active = document.querySelector(".grids__item.active")
+            if ($item_active) {
+                $item_active.classList.remove('active')
+            }
             target.classList.add('active')
             const coordsClips = getCoordsClip()
             coordsClips.forEach(renderIconAddImage)
         }
     })
+
+    /*
+    $tab.addEventListener('click', event => {
+        event.preventDefault()
+        if (event.target.tagName === 'A') {
+            $('#tab-links a.active').classList.remove('active');
+            $('section.active').classList.remove('active');
+
+            event.target.classList.add('active');
+            $(event.target.getAttribute('href')).classList.add('active');
+        }
+    })*/
 
 
     const btnDelete = new fabric.DeleteControl({
