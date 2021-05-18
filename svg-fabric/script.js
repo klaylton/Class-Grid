@@ -229,18 +229,6 @@ window.addEventListener('resize', function (event) {
         }
     })
 
-    /*
-    $tab.addEventListener('click', event => {
-        event.preventDefault()
-        if (event.target.tagName === 'A') {
-            $('#tab-links a.active').classList.remove('active');
-            $('section.active').classList.remove('active');
-
-            event.target.classList.add('active');
-            $(event.target.getAttribute('href')).classList.add('active');
-        }
-    })*/
-
 
     const btnDelete = new fabric.DeleteControl({
         width: 50, height: 50, top: 100, left: 200, fill: 'red'

@@ -51,6 +51,7 @@ body {
 
 .grids__item.active {
     background-color: rgb(36, 190, 139);
+    box-shadow: 1px 1px 8px rgba(5,5,5,0.5)
 }
 
 .grids__item svg {
