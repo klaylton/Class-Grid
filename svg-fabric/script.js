@@ -10,7 +10,7 @@ const $canvas_container = $('.canvas-container')
 const canvas_container = $(".canvas_container")
 const $canvas_container_wrapper = $('#canvas-container-wrapper')
 
-const fill = () => `#${Math.random().toString(16).slice(2, 8)}`
+const colorFill = () => `#${Math.random().toString(16).slice(2, 8)}`
 
 fabric.Object.prototype.set({
     originX: 'center',
@@ -18,6 +18,11 @@ fabric.Object.prototype.set({
     transparentCorners: false
 })
 
+/**
+ * 
+ * @param {Number} template_id id do template que será usado.
+ * @returns 
+ */
 function formTiles(template_id) {
     const tiles = []
     const usedTiles = {};
@@ -60,7 +65,7 @@ function formTiles(template_id) {
                 height: tileHeight * h_factor,
                 left: tileWidth * j,
                 top: tileHeight * i,
-                fill: fill()
+                fill: colorFill()
             };
 
             // save
@@ -73,6 +78,11 @@ function formTiles(template_id) {
     return tiles
 }
 
+/**
+ * Cria o código em SVG para ser apresentado no front-end
+ * @param {Object} tiles será extrído as propriedades para criar o svg.
+ * @returns um SVG.
+ */
 function createSVG(tiles) {
     const rects = tiles.reduce((acc, {width, height, left, top}) => {
         acc += `<rect x="${left}" y="${top}" width="${width}" height="${height}" fill="currentColor" stroke="#fff" fill-opacity="0.25" stroke-opacity="1" />`
@@ -82,6 +92,10 @@ function createSVG(tiles) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360">${rects}</svg>`
 }
 
+/**
+ * Cria a grade no Canvas
+ * @param {Object} tiles grade
+ */
 function renderTemplate(tiles) {
     canvas.clear()
     tiles.forEach(({width, height, left, top, fill}) => {
@@ -97,6 +111,11 @@ function renderTemplate(tiles) {
     canvas.renderAll()
 }
 
+/**
+ * Gera um HTML com todos os SVGs.
+ * @param {Array} rules todos os tiles
+ * @returns Node HTML contendo todos os SVG
+ */
 function renderAllLayousSVG(rules) {
     const layoutsSvgs = Object.keys(rules).reduce((acc, id) => {
         const tl = formTiles(id)
@@ -230,9 +249,6 @@ window.addEventListener('resize', function (event) {
     getCoordsClip()
 })()
 
-
-
-
 function getCoordsClip() {
     const clips = canvas.getObjects('clip')
     const coordsClips = clips.map(({width, height, top, left}) => {
@@ -252,9 +268,3 @@ function renderIconAddImage(coords) {
 
     canvas.add(icon)
 }
-
-
-
-
-
-
