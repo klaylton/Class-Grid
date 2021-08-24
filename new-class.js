@@ -32,7 +32,7 @@ var labeledRect = new LabeledRect({
     height: 250,
     left: 250,
     top: 10,
-    label: 'test',
+    label: 'Class de teste',
     fill: '#faa',
     absolutePositioned: true
 });
@@ -66,6 +66,11 @@ const group1 = new fabric.Group([rect, circle], {
     subTargetCheck: true
 });
 canvas.add(group1);
+
+group1.on('mouse:down', function (e) {
+// clicked item will be
+  console.log(e.subTargets[0])  
+});
 
 
 fabric.Image.fromURL('http://fabricjs.com/assets/pug.jpg', function (img) {
@@ -222,7 +227,7 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
 
 });
 
-const custom = new fabric.Clip([], {
+const customClip = new fabric.Clip([], {
     left: 250,
     top: 200,
     width: 200,
@@ -230,9 +235,7 @@ const custom = new fabric.Clip([], {
     absolutePositioned: true,
 });
 
-canvas.add(custom)
-
-
+// canvas.add(customClip)
 
 function onMouseDown(option) {
     if(option.subTargets[0] && option.subTargets[0].type == 'textbox')
@@ -262,12 +265,12 @@ fabric.CustomGroup = fabric.util.createClass(fabric.Group, {
     initialize: function (objects, options) {
         options || (options = {});
 
-        objects.push(new fabric.Circle({
+        const circle = new fabric.Circle({
             radius: 50,
             left: 50,
             fill: 'blue',
             angle: 45,
-        }))
+        })
 
         const rect1 = new fabric.Rect({
             left: 50,
@@ -277,7 +280,7 @@ fabric.CustomGroup = fabric.util.createClass(fabric.Group, {
             height: 100
         });
 
-        objects.push(rect1)
+        objects.push(rect1, circle)
 
         this.callSuper('initialize', objects, options);
         this.set('customAttribute', options.customAttribute || 'undefinedCustomAttribute');
@@ -322,7 +325,7 @@ function drawTestRect() {
     });
 
     const objs = [rect, rect1]
-    const cgroup = new CustomGroup([], {
+    const cgroup = new fabric.CustomGroup(objs, {
         top: 50,
         left: 50,
         customAttribute: 'Hello World',
