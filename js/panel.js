@@ -31,10 +31,10 @@ fabric.StaticCanvas.prototype._toObjectMethod = function (methodName, properties
 
 function addRect() {
     const rect = new fabric.Rect({
-        width: 600,
-        height: 515,
-        top: 300,
-        left: 553,
+        width: 100,
+        height: 100,
+        top: 150,
+        left: 150,
         fill: 'red',
         originX: 'center',
         originY: 'center',
@@ -75,12 +75,13 @@ function addFrame(e) {
                 height: img.height
             },
             {
-                backstoreOnly: true,
-                // cssOnly: true
+                backstoreOnly: true
             }
             );
 
-            const factor = getRatioContainerAndCanvas(canvas)
+            const cornerSize = 10
+            const rotatingPointOffset = 30
+
             const newWidth = 600
             const newHeight = newWidth * canvas.height / canvas.width
 
@@ -93,12 +94,14 @@ function addFrame(e) {
             $('.upper-canvas').style.width = `${newWidth}px`
             $('.upper-canvas').style.height = `${newHeight}px`
 
-           /*  canvas.setDimensions({
-                width: img.width * factor,
-                height: img.height * factor
-            }, {
-                cssOnly: true
-            }) */
+           const new_size_corner = Math.round(cornerSize * canvas.width / newWidth);
+           const new_size_rotate = Math.round(rotatingPointOffset * canvas.width / newWidth);
+
+           fabric.Object.prototype.set({
+               cornerSize: new_size_corner,
+               rotatingPointOffset: new_size_rotate
+           });
+
             canvas.requestRenderAll()
             canvas.renderAll();
         });
@@ -193,6 +196,20 @@ function scaleObject() {
     }).setCoords()
 }
 
+function copyText(event) {
+    const copyTextarea = $('#json');
+    copyTextarea.focus();
+    copyTextarea.select();
+
+    try {
+        const successful = document.execCommand('copy');
+        const msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+    }
+}
+
 canvas.on({
     'mouse:down': handlePhoto,
     'object:scaled': scaleObject
@@ -206,5 +223,6 @@ $('.clear-canvas').addEventListener('click', clearCanvas)
 $('#uploadFrame').addEventListener("change", addFrame)
 $inputFile.addEventListener("change", addPhoto)
 $('#lnkDownload').addEventListener('click', saveImage);
+$('.copy-text').addEventListener('click', copyText);
 
 
