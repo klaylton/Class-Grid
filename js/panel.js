@@ -51,11 +51,6 @@ function exportToJson() {
     $('#json').innerHTML = JSON.stringify(canvas.toJSON());
 }
 
-function getRatioContainerAndCanvas(img) {
-    const scaleRatio = Math.min(600 / img.width, 600 / img.height);
-    return scaleRatio
-}
-
 function addFrame(e) {
     const file = e.target.files[0];
     const reader = new FileReader();

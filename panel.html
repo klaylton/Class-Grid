@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel FabricJS</title>
     <style>
+        .content-wrapper,
+        .btns,
+        .textareas {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
         canvas#c {
             border: 1px solid #000;
             width: 500px;
@@ -14,27 +22,56 @@
         input[type=file]{
             display: none;
         }
+
+        button {
+            outline: none;
+            color: #2271b1;
+            border-color: #2271b1;
+            background: #f6f7f7;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 13px;
+            line-height: 2.15384615;
+            min-height: 30px;
+            margin: 0 2px;
+            padding: 0 10px;
+            cursor: pointer;
+            border-width: 1px;
+            border-style: solid;
+            -webkit-appearance: none;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background-color: #2271b1;
+            color: #fff;
+        }
         a {
             text-decoration: none;
-            color: #000;
         }
     </style>
 </head>
 <body>
-    <canvas id="c"></canvas>
-    <button class="add-frame">Add Frame</button>
-    <button class="add-rect">Add Rect</button>
-    <button class="export-json">Gerar JSON</button>
-    <button class="active-clip">Ativar Clips</button>
-    <button class="save-photo"><a id="lnkDownload" href="#">Save image</a></button>
-    <button class="clear-canvas">Limpar</button>
+    <div class="content-wrapper">
+        <canvas id="c"></canvas>
+    </div>
+    <div class="btns">
+        <button class="add-frame">Add Moldura</button>
+        <button class="add-rect">Add Clip</button>
+        <button class="export-json">Gerar JSON</button>
+        <button class="active-clip">Ativar Clips</button>
+        <button class="save-photo"><a id="lnkDownload" href="#">Salvar Prévia</a></button>
+        <button class="clear-canvas">Limpar</button>
     
-
-    <input type="file" name="uploadPhoto" id="uploadPhoto">
-    <input type="file" name="uploadFrame" id="uploadFrame">
-    <br>
-    <textarea name="json" id="json" cols="110" rows="5"></textarea>
-    <button class="copy-text">Copy</button>
+        <input type="file" name="uploadPhoto" id="uploadPhoto">
+        <input type="file" name="uploadFrame" id="uploadFrame">
+    </div>
+    <div class="textareas">
+        <textarea name="json" id="json" cols="60" rows="5"></textarea>
+        <br>
+        <button class="copy-text">Copy</button>
+    </div>
 
     <script src="./fabric.min.js"></script>
     <script src="./js/panel.js"></script>
