@@ -3,15 +3,17 @@ const canvas = new fabric.Canvas('c', {
     height: 500,
     serializeBgOverlay: false,
     controlsAboveOverlay: true,
-    selection: false
+    selection: false,
+    controlsAboveOverlay: true
 })
 
-canvas.controlsAboveOverlay = true;
+const $ = document.querySelector.bind(document)
+const $inputFile = $('#uploadPhoto')
 
 fabric.Object.prototype.set({
     transparentCorners: false,
-    cornerColor: '#ff0000',
-    cornerSize: 12,
+    cornerColor: '#0000ff',
+    cornerSize: 20,
     padding: 0
 });
 
@@ -27,15 +29,12 @@ fabric.StaticCanvas.prototype._toObjectMethod = function (methodName, properties
     return data;
 }
 
-const $ = document.querySelector.bind(document)
-const $inputFile = $('#uploadPhoto')
-
 function addRect() {
     const rect = new fabric.Rect({
-        width: 100,
-        height: 100,
-        top: 100,
-        left: 100,
+        width: 600,
+        height: 515,
+        top: 300,
+        left: 553,
         fill: 'red',
         originX: 'center',
         originY: 'center',
@@ -52,6 +51,11 @@ function exportToJson() {
     $('#json').innerHTML = JSON.stringify(canvas.toJSON());
 }
 
+function getRatioContainerAndCanvas(img) {
+    const scaleRatio = Math.min(600 / img.width, 600 / img.height);
+    return scaleRatio
+}
+
 function addFrame(e) {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -61,16 +65,42 @@ function addFrame(e) {
 
             const oImg = img.set({
                 left: 0,
-                top: 0,
-                angle: 0,
+                top: 0
             });
-            // canvas.setBackgroundImage(oImg).renderAll();
-            canvas.setOverlayImage(oImg).renderAll();
 
+            canvas.setOverlayImage(oImg);
+            
             canvas.setDimensions({
                 width: img.width,
                 height: img.height
-            });
+            },
+            {
+                backstoreOnly: true,
+                // cssOnly: true
+            }
+            );
+
+            const factor = getRatioContainerAndCanvas(canvas)
+            const newWidth = 600
+            const newHeight = newWidth * canvas.height / canvas.width
+
+            $('.canvas-container').style.width = `${newWidth}px`
+            $('.canvas-container').style.height = `${newHeight}px`
+
+            $('.lower-canvas').style.width = `${newWidth}px`
+            $('.lower-canvas').style.height = `${newHeight}px`
+
+            $('.upper-canvas').style.width = `${newWidth}px`
+            $('.upper-canvas').style.height = `${newHeight}px`
+
+           /*  canvas.setDimensions({
+                width: img.width * factor,
+                height: img.height * factor
+            }, {
+                cssOnly: true
+            }) */
+            canvas.requestRenderAll()
+            canvas.renderAll();
         });
     };
     reader.readAsDataURL(file);
@@ -82,10 +112,6 @@ function handleFrame(event) {
 
 function clearCanvas() {
     canvas.clear()
-}
-
-function savePhoto() {
-    
 }
 
 function getRatio(clip, img) {
@@ -127,22 +153,37 @@ function activeClips() {
     canvas.forEachObject(function(obj) {
         if (obj.type == 'rect') {
             obj.selectable = false
-            obj.label = 'clipPath'
+            obj.label = 'clipPath',
+            obj.fill = 'gray'
         }
     })
     canvas.discardActiveObject()
     canvas.renderAll()
 }
 
-canvas.on('mouse:down', function (event) {
+function getRatioCanvas(canvas, size) {
+    const scale = size / canvas.width
+    return scale
+}
+
+function saveImage(e) {
+    $('#lnkDownload').href = canvas.toDataURL({
+        format: 'jpg',
+        quality: 0.8,
+        multiplier: getRatioCanvas(canvas, 500)
+    });
+    $('#lnkDownload').download = 'canvas.jpg'
+}
+
+function handlePhoto(event) {
     const obj = event.target
     if (obj && obj.label == 'clipPath') {
         canvas.activeClip = obj
         $inputFile.click()
     }
-})
+}
 
-canvas.on('object:scaled', function () {
+function scaleObject() {
     const obj = canvas.getActiveObject()
     obj.set({
         width: obj.width * obj.scaleX,
@@ -150,25 +191,20 @@ canvas.on('object:scaled', function () {
         scaleX: 1,
         scaleY: 1
     }).setCoords()
-})
+}
 
+canvas.on({
+    'mouse:down': handlePhoto,
+    'object:scaled': scaleObject
+})
 
 $('.add-rect').addEventListener('click', addRect)
 $('.add-frame').addEventListener('click', handleFrame)
 $('.export-json').addEventListener('click', exportToJson)
 $('.active-clip').addEventListener('click', activeClips)
 $('.clear-canvas').addEventListener('click', clearCanvas)
-$('.save-photo').addEventListener('click', savePhoto)
 $('#uploadFrame').addEventListener("change", addFrame)
 $inputFile.addEventListener("change", addPhoto)
+$('#lnkDownload').addEventListener('click', saveImage);
 
-var imageSaver = document.getElementById('lnkDownload');
-imageSaver.addEventListener('click', saveImage, false);
 
-function saveImage(e) {
-    this.href = canvas.toDataURL({
-        format: 'jpg',
-        quality: 0.8
-    });
-    this.download = 'canvas.jpg'
-}
