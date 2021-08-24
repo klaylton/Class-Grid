@@ -175,7 +175,9 @@ function saveImage(e) {
         quality: 0.8,
         multiplier: getRatioCanvas(canvas, 500)
     });
-    $('#lnkDownload').download = 'canvas.jpg'
+
+    const date = new Date().getMilliseconds()
+    $('#lnkDownload').download = `foto_${date}.jpg`
 }
 
 function handlePhoto(event) {
