@@ -1,7 +1,8 @@
 const $ = document.querySelector.bind(document)
 const canvas = new fabric.Canvas('c',{
-    backgroundColor: '#fff'
+    backgroundColor: '#00b140'
 })
+
 
 fabric.filterBackend = new fabric.Canvas2dFilterBackend()
 
@@ -48,6 +49,7 @@ fabric.Image.filters.BlendMask = fabric.util.createClass(fabric.Image.filters.Ba
             'void main() {\n' +
             'vec4 color = texture2D(uTexture, vTexCoord);\n' +
             'vec4 color2 = texture2D(uImage, vTexCoord2);\n' +
+            'float alpha = texture2D(uImage, vTexCoord2);\n' +
             'color.a = color2.a;\n' +
             'gl_FragColor = color;\n' +
             '}',
@@ -105,9 +107,10 @@ fabric.Image.filters.BlendMask = fabric.util.createClass(fabric.Image.filters.Ba
         context.setTransform(image.scaleX, 0, 0, image.scaleY, image.left, image.top);
         context.drawImage(image._element, 0, 0, width, height);
         blendData = context.getImageData(0, 0, width, height).data;
+        
         let i = 0
         while (i < iLen) {
-            let rgb = data[i++] + data[i++] + data[i++];
+            let rgb = blendData[i++] + blendData[i++] + blendData[i++];
             data[i++] = rgb / 3;
         }
     },
@@ -133,51 +136,66 @@ fabric.Image.filters.BlendMask = fabric.util.createClass(fabric.Image.filters.Ba
     }
 });
 
-fabric.Image.filters.BlendImage.fromObject = function (object, callback) {
+fabric.Image.filters.BlendMask.fromObject = function (object, callback) {
     fabric.Image.fromObject(object.image, function (image) {
         var options = fabric.util.object.clone(object);
         options.image = image;
-        callback(new fabric.Image.filters.BlendImage(options));
+        callback(new fabric.Image.filters.BlendMask(options));
     });
 };
 
+function blend(foto){
+    fabric.Image.fromURL(`../img/mask-${foto}.jpg`, function (oImg) {
 
+        //multiply, add, diff, screen, subtract, darken, lighten, overlay, exclusion, tint
+        const filter = new fabric.Image.filters.BlendMask({
+            image: oImg,
+            mode: 'mask',
+            alpha: 1
+        });
 
+        fabric.Image.fromURL(`../img/${foto}.jpg`, function (zImg) {
+            const image = zImg.set({ left: 0, top: 0});
+            
+            canvas.setDimensions({
+                width: zImg.width,
+                height: zImg.height
+            })
 
-fabric.Image.fromURL('../img/degrade.jpg', function (oImg) {
-    const img = oImg.set({
-        
-    })
-//multiply, add, diff, screen, subtract, darken, lighten, overlay, exclusion, tint
-    var filter = new fabric.Image.filters.BlendMask({
-        image: oImg,
-        mode: 'mask',
-        alpha: 1
-    });
+            
+            image.filters.push(filter);
+            image.applyFilters();
+            
+            bgImage(zImg)
 
-    fabric.Image.fromURL('../img/mae.jpg', function (zImg) {
-        var image = zImg.set({ left: 0, top: 0}).scale(0.8);
-        image.filters.push(filter);
-        image.applyFilters();
-
-        canvas.add(image);
-
+        }, {
+            crossOrigin: 'annonymous'
+        });
     }, {
         crossOrigin: 'annonymous'
     });
 
+}
 
-}, {
-    crossOrigin: 'annonymous'
-});
+function bgImage(img) {
+    const { width, height } = img
+    fabric.Image.fromURL(`https://picsum.photos/${width}/${height}`, function (zImg) {
+        const image = zImg.set({ left: 0, top: 0});
+        canvas.setBackgroundImage(image)
+        canvas.add(img);
+        canvas.renderAll()
+    }, {
+        crossOrigin: 'annonymous'
+    });
+}
 
-fabric.Image.fromURL('../img/mae.jpg', function (zImg) {
-    var image = zImg.set({ left: 0, top: 0}).scale(0.25);
+blend('menina')
 
-    //canvas.add(image);
-}, {
-    crossOrigin: 'annonymous'
-});
+console.log(getRandomArbitrary(1, 3));
+
+function getRandomArbitrary(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
 
 
 
