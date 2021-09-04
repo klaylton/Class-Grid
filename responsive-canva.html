@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel FabricJS</title>
+    <style>
+        .container {
+            width: 100%;
+            height: 100vh;
+            border: 1px solid #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .canvas-container {
+            border: 1px solid #000;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <canvas id="c" width="500" height="500"></canvas>
+    </div>
+    <input type="range" name="slide" id="slide" min="0.05" max="0.35" step="0.01">
+
+    <script src="./fabric.min.js"></script>
+    <script src="./js/responsive.js"></script>
+</body>
+
+</html>

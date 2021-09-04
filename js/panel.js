@@ -65,43 +65,44 @@ function addFrame(e) {
 
             canvas.setOverlayImage(oImg);
             
-            canvas.setDimensions({
-                width: img.width,
-                height: img.height
-            },
-            {
-                backstoreOnly: true
-            }
-            );
-
-            const cornerSize = 10
-            const rotatingPointOffset = 30
-
-            const newWidth = 600
-            const newHeight = newWidth * canvas.height / canvas.width
-
-            $('.canvas-container').style.width = `${newWidth}px`
-            $('.canvas-container').style.height = `${newHeight}px`
-
-            $('.lower-canvas').style.width = `${newWidth}px`
-            $('.lower-canvas').style.height = `${newHeight}px`
-
-            $('.upper-canvas').style.width = `${newWidth}px`
-            $('.upper-canvas').style.height = `${newHeight}px`
-
-           const new_size_corner = Math.round(cornerSize * canvas.width / newWidth);
-           const new_size_rotate = Math.round(rotatingPointOffset * canvas.width / newWidth);
-
-           fabric.Object.prototype.set({
-               cornerSize: new_size_corner,
-               rotatingPointOffset: new_size_rotate
-           });
+            responsiveCanvas(img, 600)
 
             canvas.requestRenderAll()
             canvas.renderAll();
         });
     };
     reader.readAsDataURL(file);
+}
+
+function responsiveCanvas(img, newWidth) {
+    canvas.setDimensions({
+        width: img.width,
+        height: img.height
+    }, {
+        backstoreOnly: true
+    });
+
+    const cornerSize = 10
+    const rotatingPointOffset = 30
+
+    const newHeight = newWidth * canvas.height / canvas.width
+
+    $('.canvas-container').style.width = `${newWidth}px`
+    $('.canvas-container').style.height = `${newHeight}px`
+
+    $('.lower-canvas').style.width = `${newWidth}px`
+    $('.lower-canvas').style.height = `${newHeight}px`
+
+    $('.upper-canvas').style.width = `${newWidth}px`
+    $('.upper-canvas').style.height = `${newHeight}px`
+
+    const new_size_corner = Math.round(cornerSize * canvas.width / newWidth);
+    const new_size_rotate = Math.round(rotatingPointOffset * canvas.width / newWidth);
+
+    fabric.Object.prototype.set({
+        cornerSize: new_size_corner,
+        rotatingPointOffset: new_size_rotate
+    });
 }
 
 function handleFrame(event) {
