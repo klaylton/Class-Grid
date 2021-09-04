@@ -9,7 +9,7 @@
     <style>
         .container {
             width: 100%;
-            height: 100vh;
+            height: 500px;
             border: 1px solid #000;
             display: flex;
             justify-content: center;
@@ -32,6 +32,16 @@
 
     <input type="checkbox" name="webgl" id="webgl">
     <label for="webgl">webgl</label>
+
+    <label for="url-image">URL Image</label>
+    <input type="url" name="url-image" id="url-image">
+    <button class="upload">Load</button>
+    <button class="reload">Reload</button>
+    <br>
+    <textarea name="json" id="json" cols="30" rows="10"></textarea>
+    <button class="export">Export</button>
+    <button class="load-json">Load JSON</button>
+    <button class="save"><a id="linkDownload">Save</a></button>
 
     <script src="./fabric.min.js"></script>
     <script src="./js/mask.js"></script>

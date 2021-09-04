@@ -3,8 +3,7 @@ const canvas = new fabric.Canvas('c',{
     backgroundColor: '#00b140'
 })
 
-
-fabric.filterBackend = new fabric.Canvas2dFilterBackend()
+// fabric.filterBackend = new fabric.Canvas2dFilterBackend()
 
 fabric.Object.prototype.set({
     transparentCorners: false,
@@ -49,8 +48,8 @@ fabric.Image.filters.BlendMask = fabric.util.createClass(fabric.Image.filters.Ba
             'void main() {\n' +
             'vec4 color = texture2D(uTexture, vTexCoord);\n' +
             'vec4 color2 = texture2D(uImage, vTexCoord2);\n' +
-            'float alpha = texture2D(uImage, vTexCoord2);\n' +
-            'color.a = color2.a;\n' +
+            'float rgb = (color2.r + color2.b + color2.g) / 3.0;\n' +
+            'color.a = rgb;\n' +
             'gl_FragColor = color;\n' +
             '}',
     },
@@ -112,6 +111,7 @@ fabric.Image.filters.BlendMask = fabric.util.createClass(fabric.Image.filters.Ba
         while (i < iLen) {
             let rgb = blendData[i++] + blendData[i++] + blendData[i++];
             data[i++] = rgb / 3;
+            // if(i<=100) console.log(i++)
         }
     },
     getUniformLocations: function (gl, program) {
@@ -145,13 +145,14 @@ fabric.Image.filters.BlendMask.fromObject = function (object, callback) {
 };
 
 function blend(foto){
+    canvas.clear();
     fabric.Image.fromURL(`../img/mask-${foto}.jpg`, function (oImg) {
 
         //multiply, add, diff, screen, subtract, darken, lighten, overlay, exclusion, tint
         const filter = new fabric.Image.filters.BlendMask({
             image: oImg,
             mode: 'mask',
-            alpha: 1
+            alpha: 0.5
         });
 
         fabric.Image.fromURL(`../img/${foto}.jpg`, function (zImg) {
@@ -179,7 +180,9 @@ function blend(foto){
 
 function bgImage(img) {
     const { width, height } = img
-    fabric.Image.fromURL(`https://picsum.photos/${width}/${height}`, function (zImg) {
+    const url = `https://picsum.photos/${width}/${height}`
+    $('#url-image').value = url
+    fabric.Image.fromURL(url, function (zImg) {
         const image = zImg.set({ left: 0, top: 0});
         canvas.setBackgroundImage(image)
         canvas.add(img);
@@ -189,14 +192,56 @@ function bgImage(img) {
     });
 }
 
-blend('menina')
 
-console.log(getRandomArbitrary(1, 3));
 
 function getRandomArbitrary(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+function loadImag(event) {
+    const url = $('#url-image').value
+    fabric.Image.fromURL(url, function (zImg) {
+        const image = zImg.set({
+            left: 0,
+            top: 0
+        });
+        canvas.setBackgroundImage(image)
+        canvas.renderAll()
+    }, {
+        crossOrigin: 'annonymous'
+    })
+}
+
+function exportToJson() {
+    canvas.includeDefaultValues = false;
+    $('#json').innerHTML = JSON.stringify(canvas.toJSON());
+}
+
+function loadJSON() {
+    const json = $('#json').value
+    canvas.clear();
+    canvas.loadFromJSON(json, function () {
+        canvas.renderAll();
+    });
+}
+
+function saveImage(e) {
+    const linkDownload = $('#linkDownload')
+    linkDownload.href = canvas.toDataURL({
+        format: 'jpg',
+        quality: 0.8
+    });
+
+    const date = new Date().getMilliseconds()
+    linkDownload.download = `foto_${date}.jpg`
+}
+
+window.addEventListener('load', () => blend('mae'))
+$('.upload').addEventListener('click', loadImag)
+$('.export').addEventListener('click', exportToJson)
+$('.load-json').addEventListener('click', loadJSON)
+$('.save').addEventListener('click', saveImage)
+$('.reload').addEventListener('click', () => blend('mae'))
 
 
 
