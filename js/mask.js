@@ -105,18 +105,10 @@ fabric.Image.filters.BlendMask = fabric.util.createClass(fabric.Image.filters.Ba
         context.setTransform(image.scaleX, 0, 0, image.scaleY, image.left, image.top);
         context.drawImage(image._element, 0, 0, width, height);
         blendData = context.getImageData(0, 0, width, height).data;
-        for (let i = 0; i < iLen; i+=4) {
-            r = data[i];
-            g = data[i + 1];
-            b = data[i + 2];
-            a = data[i + 3];
-            tr = blendData[i];
-            tg = blendData[i + 1];
-            tb = blendData[i + 2];
-            ta = blendData[i + 3];
-            
-            let rgb = blendData[i++] + blendData[i++] + blendData[i++];
-            data[i++] = rgb / 3
+        let i = 0
+        while (i < iLen) {
+            let rgb = data[i++] + data[i++] + data[i++];
+            data[i++] = rgb / 3;
         }
     },
     getUniformLocations: function (gl, program) {
