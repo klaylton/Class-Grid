@@ -16,11 +16,37 @@ fabric.Image.fromURL('../img/image.png', mask => {
         absolutePositioned: true
     }).scale(0.6)
     fabric.Image.fromURL('../img/menina.jpg', img => {
-        img.scale(0.4)
-        img.clipPath = mask
+        // img.scale(0.4)
+        // img.clipPath = mask
         canvas.add(img)
         canvas.renderAll()
     })
 })
 
 
+
+// canvas.setWidth(360)
+// canvas.setHeight(360)
+
+canvas.setDimensions({
+    width: 360,
+    height: 360
+})
+
+canvas.setDimensions({
+    width: 960,
+    height: 960
+}, {
+    backstoreOnly: true
+})
+
+
+
+/* canvas.setDimensions({
+    width: 960,
+    height: 960
+}, {
+    backstoreOnly: true,
+}) */
+
+canvas.renderAll()

@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel FabricJS</title>
     <style>
+        #TB_ajaxContent {
+            width: 100%;
+            height: 880px;
+            border: 2px solid #00f;
+            display: flex;
+            flex-direction: column;
+        }
         .content-wrapper,
         .btns,
         .textareas {
@@ -13,6 +20,15 @@
             display: flex;
             justify-content: center;
             margin-top: 5px;
+            background: orangered;
+        }
+        .content-wrapper {
+            flex-grow: 1;
+            width: 100%;
+            height: 654px;
+            border: 1px solid #000;
+            background: skyblue;
+            margin: 10px auto;
         }
         canvas#c {
             border: 1px solid #000;
@@ -53,24 +69,26 @@
     </style>
 </head>
 <body>
-    <div class="content-wrapper">
-        <canvas id="c"></canvas>
-    </div>
-    <div class="btns">
-        <button class="add-frame">Add Moldura</button>
-        <button class="add-rect">Add Clip</button>
-        <button class="export-json">Gerar JSON</button>
-        <button class="active-clip">Ativar Clips</button>
-        <button class="save-photo"><a id="lnkDownload" href="#">Salvar Prévia</a></button>
-        <button class="clear-canvas">Limpar</button>
-    
-        <input type="file" name="uploadPhoto" id="uploadPhoto">
-        <input type="file" name="uploadFrame" id="uploadFrame">
-    </div>
-    <div class="textareas">
-        <textarea name="json" id="json" cols="60" rows="5"></textarea>
-        <br>
-        <button class="copy-text">Copy</button>
+    <div id="TB_ajaxContent">
+        <div class="content-wrapper">
+            <canvas id="c"></canvas>
+        </div>
+        <div class="btns">
+            <button class="add-frame">Add Moldura</button>
+            <button class="add-rect">Add Clip</button>
+            <button class="export-json">Gerar JSON</button>
+            <button class="active-clip">Ativar Clips</button>
+            <button class="save-photo"><a id="lnkDownload" href="#">Salvar Prévia</a></button>
+            <button class="clear-canvas">Limpar</button>
+        
+            <input type="file" name="uploadPhoto" id="uploadPhoto">
+            <input type="file" name="uploadFrame" id="uploadFrame">
+        </div>
+        <!-- <div class="textareas">
+            <textarea name="json" id="json" cols="60" rows="5"></textarea>
+            <br>
+            <button class="copy-text">Copy</button>
+        </div> -->
     </div>
 
     <script src="./fabric.min.js"></script>

@@ -36,8 +36,7 @@ var labeledRect = new LabeledRect({
     fill: '#faa',
     absolutePositioned: true
 });
-canvas.add(labeledRect);
-
+// canvas.add(labeledRect);
 
 const rect = new fabric.Rect({
     width: 200,
@@ -65,7 +64,7 @@ const group1 = new fabric.Group([rect, circle], {
     absolutePositioned: true,
     subTargetCheck: true
 });
-canvas.add(group1);
+// canvas.add(group1);
 
 group1.on('mouse:down', function (e) {
 // clicked item will be
@@ -205,7 +204,7 @@ fabric.Clip = fabric.util.createClass(fabric.Group, {
     },
 
     setTagName: function (value) {
-        this._objects[1].text = value;
+        // this._objects[1].text = value;
     },
 
     getValue: function () {
@@ -352,3 +351,27 @@ function drawTestRect() {
 
 };
 // drawTestRect()
+const src = './img/transparent-pattern.png';
+
+canvas.setBackgroundColor({source: src, repeat: 'repeat'}, function () {
+  canvas.renderAll();
+});
+
+
+fabric.util.loadImage(src, function (img) {
+    shape.set('fill', new fabric.Pattern({
+        source: img,
+        repeat: 'repeat'
+    }));
+    canvas.renderAll();
+});
+
+const shape = new fabric.Rect({
+    width: 200,
+    height: 200,
+    left: 100,
+    top: 100,
+});
+canvas.add(shape);
+
+

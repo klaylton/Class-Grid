@@ -62,39 +62,46 @@ function addFrame(e) {
                 left: 0,
                 top: 0
             });
-
+            
             canvas.setOverlayImage(oImg);
             
-            responsiveCanvas(img, 600)
+            const container = $('.content-wrapper')
+            responsiveCanvas(oImg, container)
 
-            canvas.requestRenderAll()
             canvas.renderAll();
         });
     };
     reader.readAsDataURL(file);
 }
 
-function responsiveCanvas(img, newWidth) {
+function getRatioResponsive(image, container) {
+    const { clientWidth, clientHeight } = container
+    const scaleRatio = Math.min(clientWidth / image.width, clientHeight / image.height);
+    return scaleRatio
+}
+
+function responsiveCanvas(img, container) {
+    
+    const ratio = getRatioResponsive(img, container)
+
+    const newWidth = img.width * ratio - 10
+    const newHeight = img.height * ratio - 10
+
+    canvas.setDimensions({
+        width: newWidth,
+        height: newHeight
+    })
+
     canvas.setDimensions({
         width: img.width,
         height: img.height
     }, {
         backstoreOnly: true
-    });
+    })
 
+    // Controles
     const cornerSize = 10
     const rotatingPointOffset = 30
-
-    const newHeight = newWidth * canvas.height / canvas.width
-
-    $('.canvas-container').style.width = `${newWidth}px`
-    $('.canvas-container').style.height = `${newHeight}px`
-
-    $('.lower-canvas').style.width = `${newWidth}px`
-    $('.lower-canvas').style.height = `${newHeight}px`
-
-    $('.upper-canvas').style.width = `${newWidth}px`
-    $('.upper-canvas').style.height = `${newHeight}px`
 
     const new_size_corner = Math.round(cornerSize * canvas.width / newWidth);
     const new_size_rotate = Math.round(rotatingPointOffset * canvas.width / newWidth);
@@ -103,6 +110,7 @@ function responsiveCanvas(img, newWidth) {
         cornerSize: new_size_corner,
         rotatingPointOffset: new_size_rotate
     });
+    canvas.renderAll()
 }
 
 function handleFrame(event) {
@@ -145,7 +153,6 @@ function addPhoto(e) {
         }
         reader.readAsDataURL(file);
     }
-    console.log(canvas.activeClip);
 }
 
 function activeClips() {
@@ -182,7 +189,7 @@ function handlePhoto(event) {
         canvas.activeClip = obj
         $inputFile.click()
     }
-}
+} 
 
 function scaleObject() {
     const obj = canvas.getActiveObject()

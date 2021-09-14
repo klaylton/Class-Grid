@@ -1,20 +1,18 @@
 const $ = document.querySelector.bind(document)
-const canvas = new fabric.Canvas('c')
+const canvas = new fabric.Canvas('c', {
+    backgroundColor: 'green'
+})
 fabric.Object.prototype.set({
     transparentCorners: false,
     cornerColor: '#0000ff',
     cornerSize: 20,
     padding: 0
 }); 
-// canvas.add(new fabric.Rect({
-//     width: 400, height: 400, fill: 'red', top: 100, left: 100
-// })).renderAll()
 
 fabric.Image.fromURL('https://picsum.photos/1000/800', img =>{
-    canvas.setBackgroundImage(img);
-    canvas.requestRenderAll();
-    imagens()
-
+    // canvas.setBackgroundImage(img);
+    // canvas.requestRenderAll();
+    // imagens()
 })
 
 function imagens(){
@@ -44,14 +42,9 @@ fabric.Image.fromURL('../img/mascara.png', function (img) {
 });
 }
 
-
-
-
-
-
-
-
-
+/**
+ * Initial responsive code
+ */
 
 const imageObj = {width: 1000, height: 800}
 const wrap = $('.container')
@@ -104,7 +97,7 @@ function resizeCanvas(ratio) {
 
 function responsiveCanvas(container, image) {
     const ratio = getRatio(container, image)
-
+    console.log(ratio);
     resizeCanvas(ratio)
 }
 
@@ -117,7 +110,6 @@ window.addEventListener('load', e => {
 })
 
 $('#slide').addEventListener('input', function(event) {
-    console.log(Number(this.value));
     resizeCanvas(Number(this.value))
 })
 

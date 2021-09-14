@@ -19,12 +19,45 @@
             border: 1px solid #000;
         }
 
+
+        /************************/
+        .wrap-editor {
+            display: flex;
+        }
+        .container {
+            width: 100%;
+            position: relative;
+        }
+        .canvasWrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+        .ads{
+            width: 160px;
+            height: 900px;
+            min-width: 160px;
+            background-color: grey;
+        }
+        .canvas-container {
+            flex: 1 1 auto;
+        }
+
+
     </style>
     
 </head>
 <body>
-    <div class="container">
-        <canvas id="c" width="500" height="500"></canvas>
+    <div class="wrap-editor">
+        <div class="ads">1 2 3 4 5 6 7 8 9</div>
+        <div class="container">
+            <div class="canvasWrap">
+                <canvas id="c" width="500" height="500"></canvas>
+            </div>
+        </div>
+        <div class="ads">1 2 3 4 5 6 7 8 9</div>
     </div>
     <input type="range" name="slide" id="slide" min="0.05" max="0.35" step="0.01">
 

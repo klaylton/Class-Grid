@@ -3,8 +3,6 @@ const canvas = new fabric.Canvas('c',{
     backgroundColor: '#00b140'
 })
 
-// fabric.filterBackend = new fabric.Canvas2dFilterBackend()
-
 fabric.Object.prototype.set({
     transparentCorners: false,
     cornerColor: '#0000ff',
