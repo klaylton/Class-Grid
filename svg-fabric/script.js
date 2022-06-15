@@ -1,5 +1,9 @@
 const $ = el => document.querySelector(el)
 
+$('.slink').addEventListener('click', event => {
+    $('#save-box').style.display = 'block'
+})
+
 const canvas = new fabric.Canvas('canvas', {
     width: 360,
     height: 360
@@ -80,7 +84,7 @@ function formTiles(template_id) {
 
 /**
  * Cria o código em SVG para ser apresentado no front-end
- * @param {Object} tiles será extrído as propriedades para criar o svg.
+ * @param {Object} tiles será extraído as propriedades para criar o svg.
  * @returns um SVG.
  */
 function createSVG(tiles) {
@@ -97,7 +101,10 @@ function createSVG(tiles) {
  * @param {Object} tiles grade
  */
 function renderTemplate(tiles) {
+    // limpa a tela
     canvas.clear()
+
+    // cria cada um dos clips
     tiles.forEach(({width, height, left, top, fill}) => {
         canvas.add(new fabric.Clip({
             width,
@@ -116,7 +123,7 @@ function renderTemplate(tiles) {
  * @param {Array} rules todos os tiles
  * @returns Node HTML contendo todos os SVG
  */
-function renderAllLayousSVG(rules) {
+function renderAllLayoutsSVG(rules) {
     const layoutsSvgs = Object.keys(rules).reduce((acc, id) => {
         const tl = formTiles(id)
         const svg = createSVG(tl)
@@ -127,36 +134,6 @@ function renderAllLayousSVG(rules) {
     return layoutsSvgs
 }
 
-$('#scale').addEventListener('input', function(e) {
-    const val = Number(e.target.value)
-    onScaleUpdate(val)
-})
-
-// ajuste na escala
-function onScaleUpdate(value) {
-    // $("#slider-scale-value").val(value);
-
-    const new_width = canvas.width / 100 * value;
-    const new_height = canvas.height / 100 * value;
-
-    $(".canvas_container").style.width = new_width + "px";
-    $(".canvas_container").style.height = new_height + "px";
-
-    $("#canvas").style.width = new_width + "px";
-    $("#canvas").style.height = new_height + "px";
-
-    // editor.move.checkPosition();
-    render_after_scale();
-}
-
-function render_after_scale(){
-    const new_size_corner = Math.round(20 * canvas.width / $("#canvas").clientWidth);
-    const new_size_rotate = Math.round(45 * canvas.width / $("#canvas").clientWidth);
-    fabric.Object.prototype.set({
-        cornerSize: new_size_corner,
-        rotatingPointOffset: new_size_rotate
-    });
-}
 
 function canvasPos() {
     const max_height = Math.max(window.innerHeight - 100 - 80, 100);
@@ -198,8 +175,6 @@ function canvasPos() {
 
 
 window.addEventListener('resize', function (event) {
-    console.log(window.innerHeight);
-    
     canvasPos()
 });
 
@@ -209,7 +184,7 @@ window.addEventListener('resize', function (event) {
     renderTemplate(formTiles(curr_template))
     
     const $grids = document.querySelector('#grids')
-    $grids.innerHTML = renderAllLayousSVG(rules)
+    $grids.innerHTML = renderAllLayoutsSVG(rules)
     const $gridsLayouts = $grids.querySelectorAll('.grids__item')
     $grids.addEventListener('click', ({target}) => {
         if (target.classList.contains('grids__item')) {

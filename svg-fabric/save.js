@@ -120,16 +120,3 @@ function isChrome() {
 function isSafari() {
     return !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 }
-
-
-
-var imageSaver = document.getElementById('lnkDownload');
-imageSaver.addEventListener('click', saveImage, false);
-
-function saveImage(e) {
-    this.href = canvas.toDataURL({
-        format: 'png',
-        quality: 0.8
-    });
-    this.download = 'canvas.png'
-}

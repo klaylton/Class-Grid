@@ -54,7 +54,6 @@ const rules = {
 }
 
 
-
 function subclasses() {
 
     fabric.Clip = fabric.util.createClass(fabric.Rect, {
@@ -114,11 +113,7 @@ function subclasses() {
             this.set({opacity: 1})
         }
     });
-
-
     // classe de teste
-    
-
 }
 
 
