@@ -16,11 +16,11 @@ const $canvas_container_wrapper = $('#canvas-container-wrapper')
 
 const colorFill = () => `#${Math.random().toString(16).slice(2, 8)}`
 
-fabric.Object.prototype.set({
-    originX: 'center',
-    originY: 'center',
-    transparentCorners: false
-})
+// fabric.Object.prototype.set({
+//     originX: 'center',
+//     originY: 'center',
+//     transparentCorners: false
+// })
 
 /**
  * 
@@ -69,6 +69,8 @@ function formTiles(template_id) {
                 height: tileHeight * h_factor,
                 left: tileWidth * j,
                 top: tileHeight * i,
+                // originX: 'center',
+                // originY: 'center',
                 fill: colorFill()
             };
 
@@ -111,6 +113,8 @@ function renderTemplate(tiles) {
             height,
             left: left+width/2,
             top: top + height /2,
+            originX: 'center',
+            originY: 'center',
             fill,
             objectCaching: false,
         }))
@@ -135,52 +139,7 @@ function renderAllLayoutsSVG(rules) {
 }
 
 
-function canvasPos() {
-    const max_height = Math.max(window.innerHeight - 100 - 80, 100);
-    const max_height2 = window.innerHeight - 100 - 80;
-
-    // $('#canvas-container').css({'max-height': max_height});
-    $canvas_container_wrapper.style.maxHeight = `${max_height2}px`
-    $canvas_container_wrapper.style.height = `${max_height}px`
-
-    let new_width = $canvas_container_wrapper.clientWidth;
-    let new_height = Math.round(new_width * canvas.height / canvas.width);
-
-    if (new_width > canvas.width) {
-        new_width = canvas.width;
-        new_height = canvas.height;
-    }
-
-    if (new_height > max_height) {
-        new_height = max_height;
-        new_width = Math.round(new_height * canvas.width / canvas.height);
-    }
-
-    canvas_container.style.width = `${new_width}px`
-    canvas_container.style.height = `${new_height}px`
-
-    canvas.setDimensions({
-        width: `${new_width}px`,
-        height: `${new_height}px`
-    }, {
-        cssOnly: true
-    })
-
-    $canvas_container.style.marginLeft = 'auto'
-    $canvas_container.style.marginTop = 0
-
-    canvas.requestRenderAll()
-
-};
-
-
-window.addEventListener('resize', function (event) {
-    canvasPos()
-});
-
-
 (function() {
-    canvasPos()
     renderTemplate(formTiles(curr_template))
     
     const $grids = document.querySelector('#grids')
@@ -203,26 +162,6 @@ window.addEventListener('resize', function (event) {
             coordsClips.forEach(renderIconAddImage)
         }
     })
-
-
-    const btnDelete = new fabric.DeleteControl({
-        width: 50, height: 50, top: 100, left: 200, fill: 'red'
-    })
-    // canvas.add(btnDelete)
-/*
-    canvas.on('mouse:over', function (e) {
-        if (e.target.type === 'DeleteControl') {
-            e.target.hide()
-            canvas.renderAll();
-        }
-    })
-    canvas.on('mouse:out', function (e) {
-        if (e.target.type === 'DeleteControl') {
-            e.target.show()
-            canvas.renderAll();
-        }
-    })
-*/
 
     getCoordsClip()
 })()
