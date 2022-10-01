@@ -36,7 +36,7 @@ var labeledRect = new LabeledRect({
     fill: '#faa',
     absolutePositioned: true
 });
-canvas.add(labeledRect);
+// canvas.add(labeledRect);
 
 const rect = new fabric.Rect({
     width: 200,
@@ -46,7 +46,7 @@ const rect = new fabric.Rect({
     fill: 'red',
     // absolutePositioned: true
 });
-// canvas.add(rect)
+canvas.add(rect)
 
 const circle = new fabric.Circle({
     left: rect.left + rect.width / 2,
@@ -352,6 +352,12 @@ function drawTestRect() {
 };
 // drawTestRect()
 const src = './img/transparent-pattern.png';
+const newSrc = './img/fundo-2.jpg';
+
+fabric.Image.fromURL('./img/fundo-1.jpg', function (img) {
+    img.scaleToWidth(200);
+    canvas.add(img);
+});
 
 canvas.setBackgroundColor({source: src, repeat: 'repeat'}, function () {
   canvas.renderAll();
@@ -374,8 +380,30 @@ const shape = new fabric.Rect({
 });
 canvas.add(shape);
 
-document.querySelector('.jsonExport')
-    .addEventListener('click', function() {
-        canvas.includeDefaultValues = false;
-        document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON());
-    })
+document.querySelector('.jsonExport').addEventListener('click', function() {
+    canvas.includeDefaultValues = false;
+    document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON());
+})
+
+document.querySelector('.cleanCanvas').addEventListener('click', function() {
+    canvas.clear()
+    canvas.renderAll()
+})
+
+document.querySelector('.loadCanvas').addEventListener('click', function() {
+    
+    canvas.setDimensions({ width: 800, height: 600 });
+    const json = document.querySelector('#json').innerHTML
+
+    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
+        console.log(o, object)
+        if (object.type == 'image') {
+            object.setSrc(newSrc, canvas.renderAll.bind(canvas))
+        }
+        canvas.renderAll()
+    });
+})
+
+document.querySelector('.testCanvas').addEventListener('click', function () {
+    console.log(canvas.getObjects());
+})
