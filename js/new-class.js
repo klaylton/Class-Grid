@@ -396,7 +396,7 @@ document.querySelector('.loadCanvas').addEventListener('click', function() {
     const json = document.querySelector('#json').innerHTML
 
     canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
-        console.log(o, object)
+        console.log(object)
         if (object.type == 'image') {
             object.setSrc(newSrc, canvas.renderAll.bind(canvas))
         }
