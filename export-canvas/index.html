@@ -6,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Class</title>
     <style>
-        canvas {
-            border: 1px solid #000;
+        .box-canvas {
+            display: flex;
         }
+        canvas {border: 1px solid #000;}
     </style>
 </head>
 
 <body>
-    <canvas id="c" width="500" height="500"></canvas>
+    <div class="box-canvas">
+        <canvas id="c" width="500" height="500"></canvas>
+        <canvas id="copy"></canvas>
+    </div>
+    
     <button class="jsonExport">Exportar</button>
     <button class="cleanCanvas">Clear</button>
     <button class="loadCanvas">Load</button>
@@ -21,8 +26,9 @@
     <button class="saveCanvas">Save</button>
     <a id="lnkDownload" href="#">Save image</a>
     <input type="file" name="upload" id="upload">
-    <textarea name="json" id="json" cols="30" rows="10"></textarea>
-    <script src="../js/fabric.min.js"></script>
+    <textarea name="json" id="json" cols="30" rows="10"></textarea><br>
+    
+    <script src="../js/fabric-5.2.4.min.js"></script>
     <script src="script.js"></script>
 </body>
 

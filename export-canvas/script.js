@@ -1,3 +1,4 @@
+let canvasCopy = null
 const canvas = new fabric.Canvas('c', {
     width: 800, 
     height: 566,
@@ -6,9 +7,9 @@ const canvas = new fabric.Canvas('c', {
 fabric.Object.prototype.transparentCorners = false
 
 const src = '../img/transparent-pattern.png';
-let newSrc = '../img/moldura-grande.png';
+// let newSrc = '../img/moldura-grande.png';
 let photo = '../img/menina.jpg';
-const frame = '../img/moldura-800x566.png'
+const frame = '../img/moldura-jesus-te-ama-800x566.png'
 
 const width = 800
 const height = 566
@@ -33,8 +34,8 @@ function clickOn() {
 }
 
 document.querySelector('.jsonExport').addEventListener('click', function () {
-    canvas.includeDefaultValues = false;
-    document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON());
+    // canvas.includeDefaultValues = false;
+    document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON(['label']));
 })
 
 document.querySelector('.cleanCanvas').addEventListener('click', function () {
@@ -43,54 +44,99 @@ document.querySelector('.cleanCanvas').addEventListener('click', function () {
 })
 
 document.querySelector('.loadCanvas').addEventListener('click', function () {
+    canvasCopy = new fabric.Canvas('copy', {
+        width: 800,
+        height: 566
+    })
 
-    canvas.setDimensions({ width: 1536, height: 1086 },{
-        backstoreOnly: true, cssOnly:false
-    });
     const json = document.querySelector('#json').innerHTML
 
-    canvas.loadFromJSON(json, canvas.renderAll.bind(canvas), function (o, object) {
-        object.set({
-            width: object.width * ratio,
-            height: object.height * ratio,
-            top: object.top * ratio,
-            left: object.left * ratio
-        })
-        if (object.label == 'image') {
-            object.setSrc(newSrc, canvas.renderAll.bind(canvas))
-            console.log(object);
-        }
-        canvas.renderAll()
+    canvasCopy.loadFromJSON(json, canvasCopy.renderAll.bind(canvasCopy), function (o, object) {
+        new Promise(resolve => {
+            const image = new Image()
+            image.onload = function (event) {
+                resolve({
+                    width: image.width,
+                    height: image.height,
+                    url: image.src
+                })
+            }
+            image.src = frame.replace(/(.*)(\-\d+x\d+)(\.png)/, '$1$3')
+        }).then(dataImg => {
+                canvasCopy.forEachObject(function (obj) {
+                    if (obj.isType('image') && obj.label === 'frame') {
+                        console.log('moldura');
+                        obj.setSrc(dataImg.url, function () {
+                            canvasCopy.requestRenderAll();
+                        }, { crossOrigin: 'annonymous' })
+
+                        canvasCopy.setDimensions({ width: dataImg.width, height: dataImg.height}, {
+                            backstoreOnly: true, cssOnly: true
+                        });
+                    } else {
+                        const ratio = width / 800
+                        obj.set({
+                            top: obj.top * ratio,
+                            left: obj.left * ratio
+                        }).scale(ratio).setCoords()
+                    }
+                });
+                console.log(canvasCopy.getObjects());
+                canvasCopy.renderAll()
+
+            })
     });
 })
 
 document.querySelector('.testCanvas').addEventListener('click', function () {
-    canvas.forEachObject(function (object) {
-        object.set({
-            width: object.width * ratio,
-            height: object.height * ratio,
-            top: object.top * ratio,
-            left: object.left * ratio
-        }).setCoords()
-
-        if (object.isType('image') && object.hasOwnProperty('label')) {
-            object.setSrc(newSrc, function () {
-                canvas.requestRenderAll();
-            }, { crossOrigin: 'annonymous' })
-            canvas.setDimensions({ width: 1536, height: 1086 }, {
-                backstoreOnly: true, cssOnly: false
-            });
+    new Promise(resolve =>{
+        const image = new Image()
+        image.onload = function(event) {
+            resolve({
+                width: image.width,
+                height: image.height,
+                url: image.src
+            })
         }
-    });
+        image.src = frame.replace(/(.*)(\-\d+x\d+)(\.png)/, '$1$3')
+    })
+    .then(data =>{
+        console.log(data);
+
+        canvas.forEachObject(function (object) {
+            if (object.isType('image') && object.hasOwnProperty('label')) {
+                const reg = /(.*)(\-\d+x\d+)(\.png)/
+                const url = object.getSrc()
+                const newSrc = url.replace(reg, '$1$3')
+                
+                object.setSrc(newSrc, function () {
+                    canvas.requestRenderAll();
+                }, { crossOrigin: 'annonymous' })
+
+                canvas.setDimensions({ width: 1536, height: 1086 }, {
+                    backstoreOnly: true, cssOnly: false
+                });
+            } else {
+                const ratio = 1536 / 800
+                object.set({
+                    top: object.top * ratio,
+                    left: object.left * ratio
+                }).scale(ratio).setCoords()
+            }
+
+            
+        });
+
+    })
 })
+
 document.querySelector('#lnkDownload').addEventListener('click', function() {
-    this.href = canvas.toDataURL({
+    this.href = canvasCopy.toDataURL({
         format: 'png',
         quality: 0.8
     });
     this.download = 'canvas.png'
 })
-
 
 function addFrame() {
     fabric.Image.fromURL(frame, function (img) {
@@ -142,7 +188,8 @@ function addPhoto(clip) {
             scaleY: rate,
             originY: 'center',
             originX: 'center',
-            clipPath: clip
+            clipPath: clip,
+            label: 'photo'
         });
         img.filters.push(new fabric.Image.filters.Grayscale());
         img.applyFilters();
