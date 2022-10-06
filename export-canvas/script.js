@@ -1,21 +1,25 @@
 let canvasCopy = null
+let json = null
 const canvas = new fabric.Canvas('c', {
-    width: 800, 
-    height: 566,
+    width: 200, 
+    height: 166,
     preserveObjectStacking: true,
 })
 fabric.Object.prototype.transparentCorners = false
 
+canvas.setDimensions({
+    width: 800,
+    height: 566
+})
+
 const src = '../img/transparent-pattern.png';
-// let newSrc = '../img/moldura-grande.png';
-let photo = '../img/menina.jpg';
+const photo = '../img/menina.jpg';
 const frame = '../img/moldura-jesus-te-ama-800x566.png'
 
 const width = 800
 const height = 566
 
 const ratio = 1536 / 800
-
 
 function loadElements(){
     return new Promise(resolve =>{
@@ -35,7 +39,8 @@ function clickOn() {
 
 document.querySelector('.jsonExport').addEventListener('click', function () {
     // canvas.includeDefaultValues = false;
-    document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON(['label']));
+    // document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON(['label']));
+    json = JSON.stringify(canvas.toJSON(['label']));
 })
 
 document.querySelector('.cleanCanvas').addEventListener('click', function () {
@@ -46,45 +51,47 @@ document.querySelector('.cleanCanvas').addEventListener('click', function () {
 document.querySelector('.loadCanvas').addEventListener('click', function () {
     canvasCopy = new fabric.Canvas('copy', {
         width: 800,
-        height: 566
+        height: 566,
+        backgroundColor: '#eee'
     })
 
-    const json = document.querySelector('#json').innerHTML
+    // const json = document.getElementById('json').innerHTML
 
-    canvasCopy.loadFromJSON(json, canvasCopy.renderAll.bind(canvasCopy), function (o, object) {
-        new Promise(resolve => {
-            const image = new Image()
-            image.onload = function (event) {
-                resolve({
-                    width: image.width,
-                    height: image.height,
-                    url: image.src
-                })
-            }
-            image.src = frame.replace(/(.*)(\-\d+x\d+)(\.png)/, '$1$3')
-        }).then(dataImg => {
-                canvasCopy.forEachObject(function (obj) {
-                    if (obj.isType('image') && obj.label === 'frame') {
-                        console.log('moldura');
-                        obj.setSrc(dataImg.url, function () {
-                            canvasCopy.requestRenderAll();
-                        }, { crossOrigin: 'annonymous' })
-
-                        canvasCopy.setDimensions({ width: dataImg.width, height: dataImg.height}, {
-                            backstoreOnly: true, cssOnly: true
-                        });
-                    } else {
-                        const ratio = width / 800
-                        obj.set({
-                            top: obj.top * ratio,
-                            left: obj.left * ratio
-                        }).scale(ratio).setCoords()
-                    }
-                });
-                console.log(canvasCopy.getObjects());
-                canvasCopy.renderAll()
-
+    new Promise(resolve => {
+        const image = new Image()
+        image.onload = function (event) {
+            resolve({
+                width: image.width,
+                height: image.height,
+                url: image.src
             })
+        }
+        image.src = frame.replace(/(.*)(\-\d+x\d+)(\.png)/, '$1$3')
+    })
+
+    .then(dataImg => {
+        canvasCopy.loadFromJSON(json, canvasCopy.renderAll.bind(canvasCopy), function (o, object) {
+            if (object.isType('image') && object.label === 'frame') {
+                object.setSrc(dataImg.url, function () {
+                    canvasCopy.requestRenderAll();
+                }, { crossOrigin: 'annonymous' })
+            } else {
+                const ratio = dataImg.width / 800
+                object.set({
+                    top: object.top * ratio,
+                    left: object.left * ratio
+                }).scale(ratio).setCoords()
+            }
+
+            canvasCopy.renderAll()
+        })
+        // canvas.set({ width: dataImg.width, height: dataImg.height });
+        console.log({ width: dataImg.width, height: dataImg.height });
+        canvasCopy.setDimensions(
+            { width: dataImg.width, height: dataImg.height },
+            { backstoreOnly: true, cssOnly: true }
+        );
+        canvasCopy.requestRenderAll()
     });
 })
 
