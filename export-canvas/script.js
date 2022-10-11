@@ -1,5 +1,7 @@
 let canvasCopy = null
 let json = null
+
+const $ = document.querySelector.bind(document)
 const canvas = new fabric.Canvas('c', {
     width: 200, 
     height: 166,
@@ -38,9 +40,9 @@ function clickOn() {
 }
 
 document.querySelector('.jsonExport').addEventListener('click', function () {
-    // canvas.includeDefaultValues = false;
-    // document.querySelector('#json').innerHTML = JSON.stringify(canvas.toJSON(['label']));
+    canvas.includeDefaultValues = false;
     json = JSON.stringify(canvas.toJSON(['label']));
+    document.querySelector('#json').innerHTML = json
 })
 
 document.querySelector('.cleanCanvas').addEventListener('click', function () {
@@ -48,18 +50,12 @@ document.querySelector('.cleanCanvas').addEventListener('click', function () {
     canvas.renderAll()
 })
 
-document.querySelector('.loadCanvas').addEventListener('click', function () {
-    canvasCopy = new fabric.Canvas('copy', {
-        width: 800,
-        height: 566,
-        backgroundColor: '#eee'
-    })
-
-    // const json = document.getElementById('json').innerHTML
-
+$('.loadCanvas').addEventListener('click', function () {
+    canvas.includeDefaultValues = false;
+    json = JSON.stringify(canvas.toJSON(['label']));
     new Promise(resolve => {
         const image = new Image()
-        image.onload = function (event) {
+        image.onload = function () {
             resolve({
                 width: image.width,
                 height: image.height,
@@ -68,34 +64,61 @@ document.querySelector('.loadCanvas').addEventListener('click', function () {
         }
         image.src = frame.replace(/(.*)(\-\d+x\d+)(\.png)/, '$1$3')
     })
-
     .then(dataImg => {
+        canvasCopy = new fabric.Canvas('copy', {
+            width: dataImg.width,
+            height: dataImg.height,
+            backgroundColor: '#eee',
+            preserveObjectStacking: true
+        })
+
+        return dataImg
+    })
+    .then(dataImg => {
+        const ratio = dataImg.width / 800
         canvasCopy.loadFromJSON(json, canvasCopy.renderAll.bind(canvasCopy), function (o, object) {
-            if (object.isType('image') && object.label === 'frame') {
+            if (object.hasOwnProperty('label') && object.label === 'frame') {
                 object.setSrc(dataImg.url, function () {
                     canvasCopy.requestRenderAll();
                 }, { crossOrigin: 'annonymous' })
             } else {
-                const ratio = dataImg.width / 800
-                object.set({
-                    top: object.top * ratio,
-                    left: object.left * ratio
-                }).scale(ratio).setCoords()
-            }
+                if (object.clipPath) {
+                    object.clipPath.top = object.clipPath.top * ratio
+                    object.clipPath.left = object.clipPath.left * ratio
+                    object.clipPath.width = object.clipPath.width * ratio
+                    object.clipPath.height = object.clipPath.height * ratio
 
-            canvasCopy.renderAll()
+                    const new_ratio = ratio * object.scaleX
+                    object.set({
+                        top: object.top * ratio,
+                        left: object.left * ratio
+                    }).scale(new_ratio).setCoords()
+                } else {
+                    object.set({
+                        top: object.top * ratio,
+                        left: object.left * ratio
+                    }).scale(ratio).setCoords()
+                }
+            }
         })
-        // canvas.set({ width: dataImg.width, height: dataImg.height });
-        console.log({ width: dataImg.width, height: dataImg.height });
-        canvasCopy.setDimensions(
-            { width: dataImg.width, height: dataImg.height },
-            { backstoreOnly: true, cssOnly: true }
-        );
-        canvasCopy.requestRenderAll()
-    });
+        canvasCopy.renderAll()
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve('ok')
+            }, 100);
+        })
+    })
+    .then( dataImg =>{
+        $('#lnkDownload').href = canvasCopy.toDataURL({
+            format: 'png',
+            quality: 0.8
+        });
+        $('#lnkDownload').download = 'canvas.png'
+        $('#lnkDownload').click()
+    })
 })
 
-document.querySelector('.testCanvas').addEventListener('click', function () {
+$('.testCanvas').addEventListener('click', function () {
     new Promise(resolve =>{
         const image = new Image()
         image.onload = function(event) {
@@ -108,7 +131,6 @@ document.querySelector('.testCanvas').addEventListener('click', function () {
         image.src = frame.replace(/(.*)(\-\d+x\d+)(\.png)/, '$1$3')
     })
     .then(data =>{
-        console.log(data);
 
         canvas.forEachObject(function (object) {
             if (object.isType('image') && object.hasOwnProperty('label')) {
@@ -137,7 +159,7 @@ document.querySelector('.testCanvas').addEventListener('click', function () {
     })
 })
 
-document.querySelector('#lnkDownload').addEventListener('click', function() {
+$('#lnkDownload').addEventListener('click', function() {
     this.href = canvasCopy.toDataURL({
         format: 'png',
         quality: 0.8
@@ -167,6 +189,7 @@ function addClip() {
     const clip = new fabric.Rect({
         left: 556.43,
         top: 287.98,
+        label: 'clip',
         fill: 'red',
         width: 421.6,
         height: 515.51,
@@ -188,6 +211,7 @@ function addClip() {
 function addPhoto(clip) {
     fabric.Image.fromURL(photo, function (img) {
         const rate = getRatio(clip, img)
+        console.log(rate);
         img.set({
             left: clip.left,
             top: clip.top,
@@ -215,6 +239,7 @@ function addRect() {
         left: 200,
         top: 200,
         fill: 'red',
+        label: 'rect',
         width: 100,
         height: 100
     });
